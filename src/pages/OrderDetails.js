@@ -17,7 +17,7 @@ const mockUsageData = {
     end: "2025-05-13T05:30:00Z",
   },
   price: "10000",
-  country: "South Korea",
+  country: "Korea",
   simType: "physical",
   orderType: "gift"
 };
@@ -29,14 +29,19 @@ const OrderDetails = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ color: '#dc004e', fontWeight: 600 }}>
         SIM Card Usage Details
       </Typography>
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 3, height: '100%' }}>
-            <Typography variant="h6" gutterBottom>
+          <Paper sx={{ 
+            p: 3, 
+            height: '100%',
+            boxShadow: '0 4px 20px rgba(220, 0, 78, 0.1)',
+            borderRadius: 2
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ color: '#dc004e', fontWeight: 600 }}>
               SIM Card Information
             </Typography>
             <Box sx={{ mt: 2 }}>
@@ -52,8 +57,13 @@ const OrderDetails = () => {
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 3, height: '100%' }}>
-            <Typography variant="h6" gutterBottom>
+          <Paper sx={{ 
+            p: 3, 
+            height: '100%',
+            boxShadow: '0 4px 20px rgba(220, 0, 78, 0.1)',
+            borderRadius: 2
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ color: '#dc004e', fontWeight: 600 }}>
               Data Usage
             </Typography>
             <Box sx={{ mt: 2 }}>
@@ -63,7 +73,12 @@ const OrderDetails = () => {
                 <Typography>Remaining: {mockUsageData.dataUsage.remaining / 1000} GB</Typography>
               </Box>
               <Box sx={{ mb: 2 }}>
-                <LinearProgress variant="determinate" value={usagePercentage} />
+                <LinearProgress 
+                  variant="determinate" 
+                  value={usagePercentage} 
+                  color="secondary"
+                  sx={{ height: 8, borderRadius: 4 }}
+                />
               </Box>
               <Typography variant="caption" color="text.secondary">
                 {usagePercentage.toFixed(1)}% used
@@ -73,15 +88,19 @@ const OrderDetails = () => {
         </Grid>
 
         <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
+          <Paper sx={{ 
+            p: 3,
+            boxShadow: '0 4px 20px rgba(220, 0, 78, 0.1)',
+            borderRadius: 2
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ color: '#dc004e', fontWeight: 600 }}>
               Validity Period
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography>Start Date: {startDate.toLocaleString()}</Typography>
               <Typography>End Date: {endDate.toLocaleString()}</Typography>
               <Typography>Duration: {Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24))} days</Typography>
-              <Typography>Price: {mockUsageData.price} KRW</Typography>
+              <Typography>Price: {mockUsageData.price} ₮</Typography>
             </Box>
           </Paper>
         </Grid>
@@ -90,9 +109,19 @@ const OrderDetails = () => {
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           size="large"
-          sx={{ px: 4, py: 1.5 }}
+          sx={{ 
+            px: 4, 
+            py: 1.5,
+            borderRadius: '10px',
+            boxShadow: '0 4px 10px rgba(220, 0, 78, 0.3)',
+            background: 'linear-gradient(45deg, #dc004e 30%, #ff4081 90%)',
+            '&:hover': {
+              boxShadow: '0 6px 12px rgba(220, 0, 78, 0.4)',
+              background: 'linear-gradient(45deg, #c50046 30%, #e91e63 90%)',
+            }
+          }}
         >
           Refresh Data
         </Button>
