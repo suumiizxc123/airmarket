@@ -3,27 +3,15 @@ import { mockUsers } from '../mock/data';
 // Mock API delay
 const mockAPIDelay = (ms = 1000) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Cookie management
-const setCookie = (name, value, days) => {
-  const date = new Date();
-  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-  const expires = "expires=" + date.toUTCString();
-  document.cookie = name + "=" + value + "; " + expires + "; path=/";
+// Replace cookie-based authentication with localStorage
+const setAuth = (token, user) => {
+  localStorage.setItem('token', token);
+  localStorage.setItem('user', JSON.stringify(user));
 };
 
-const getCookie = (name) => {
-  const nameEQ = name + "=";
-  const ca = document.cookie.split(';');
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-  }
-  return null;
-};
-
-const deleteCookie = (name) => {
-  document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+const clearAuth = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
 };
 
 export const login = async (username, password) => {
@@ -39,8 +27,7 @@ export const login = async (username, password) => {
     }
 
     const token = `mock-token-${Date.now()}`;
-    setCookie('token', token, 1); // Session cookie that expires in 1 day
-    setCookie('user', JSON.stringify(user), 1);
+    setAuth(token, user); // Use localStorage instead of cookies
     
     return {
       token,
@@ -55,20 +42,19 @@ export const login = async (username, password) => {
 };
 
 export const logout = () => {
-  deleteCookie('token');
-  deleteCookie('user');
+  clearAuth(); // Clear localStorage
 };
 
 export const isAuthenticated = () => {
-  return getCookie('token') !== null;
+  return localStorage.getItem('token') !== null;
 };
 
 export const getToken = () => {
-  return getCookie('token');
+  return localStorage.getItem('token');
 };
 
 export const getUser = () => {
-  const userStr = getCookie('user');
+  const userStr = localStorage.getItem('user');
   return userStr ? JSON.parse(userStr) : null;
 };
 

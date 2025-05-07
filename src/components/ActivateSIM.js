@@ -38,7 +38,7 @@ const ActivateSIM = () => {
       }}
     >
       <Typography variant="h6" gutterBottom>
-        Activate SIM Card
+        Activate GlobalSIM Card
       </Typography>
       
       <Typography variant="subtitle1" gutterBottom>
@@ -77,7 +77,7 @@ const ActivateSIM = () => {
         color="primary"
         sx={{ mt: 2 }}
       >
-        Activate SIM
+        Activate GlobalSIM
       </Button>
     </Box>
   );

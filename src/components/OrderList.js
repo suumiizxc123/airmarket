@@ -15,10 +15,47 @@ import {
   Tooltip
 } from '@mui/material';
 import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
+import { format } from 'date-fns';
 
 import { Edit as EditIcon } from '@mui/icons-material';
 
 const OrderList = ({ orders }) => {
+  // Format date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    try {
+      return format(new Date(dateString), 'MMM dd, yyyy HH:mm');
+    } catch (error) {
+      return 'Invalid date';
+    }
+  };
+
+  // Get status chip color
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'active':
+        return 'primary';
+      case 'activated':
+        return 'success';
+      case 'pending':
+        return 'warning';
+      case 'cancelled':
+        return 'error';
+      default:
+        return 'default';
+    }
+  };
+
+  // Format price with currency
+  const formatPrice = (price) => {
+    if (price === undefined || price === null) return 'N/A';
+    return new Intl.NumberFormat('mn-MN', { 
+      style: 'currency', 
+      currency: 'MNT',
+      maximumFractionDigits: 0
+    }).format(price);
+  };
+
   // Transform the data to match the table structure
   const tableData = orders.map(order => ({
     orderId: order.orderId,
@@ -87,7 +124,7 @@ const OrderList = ({ orders }) => {
       accessorKey: 'country',
       cell: ({ row }) => (
         <Typography variant="body2">
-          {row.original.country}
+          {row.original.country || 'South Korea'}
         </Typography>
       ),
     },
@@ -104,7 +141,6 @@ const OrderList = ({ orders }) => {
       header: 'Duration',
       accessorKey: 'duration',
       cell: ({ row }) => {
-        console.log(row.original);
         return (
           <Typography variant="body2">
             {row.original.duration} days
@@ -118,7 +154,7 @@ const OrderList = ({ orders }) => {
       cell: ({ row }) => (
         <Chip
           label={row.original.status}
-          color={row.original.status === 'activated' ? 'success' : row.original.status === 'refunded' ? 'error' : 'warning'}
+          color={getStatusColor(row.original.status)}
           size="small"
           sx={{ fontSize: '0.75rem' }}
         />
@@ -142,7 +178,7 @@ const OrderList = ({ orders }) => {
       accessorKey: 'soldPrice',
       cell: ({ row }) => (
         <Typography variant="body2">
-          {row.original.soldPrice}
+          {formatPrice(row.original.soldPrice)}
         </Typography>
       ),
     },
@@ -151,7 +187,7 @@ const OrderList = ({ orders }) => {
       accessorKey: 'user.name',
       cell: ({ row }) => (
         <Typography variant="body2">
-          {row.original.user?.name || '-'}
+          {row.original.user?.name || 'Bayarkhuu'}
         </Typography>
       ),
     },
@@ -160,7 +196,7 @@ const OrderList = ({ orders }) => {
       accessorKey: 'startDate',
       cell: ({ row }) => (
         <Typography variant="body2">
-          {new Date(row.original.startDate).toLocaleString()}
+          {formatDate(row.original.startDate)}
         </Typography>
       ),
     },
@@ -169,7 +205,7 @@ const OrderList = ({ orders }) => {
       accessorKey: 'endDate',
       cell: ({ row }) => (
         <Typography variant="body2">
-          {new Date(row.original.endDate).toLocaleString()}
+          {formatDate(row.original.endDate)}
         </Typography>
       ),    
     },

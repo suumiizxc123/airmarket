@@ -57,7 +57,7 @@ const DataUsage = () => {
         bgcolor: 'rgba(255, 255, 255, 0.95)',
         borderRadius: 16,
         p: 3,
-        boxShadow: '0 15px 30px rgba(220, 0, 78, 0.2)',
+        boxShadow: '0 15px 30px rgba(0,0,0,0.1)',
         backdropFilter: 'blur(8px)',
         mb: 4
       }}>
@@ -67,15 +67,26 @@ const DataUsage = () => {
           justifyContent: 'space-between',
           mb: 3
         }}>
-          <img 
-            src="https://www.airmarket.mn/assets/images/airmarket_logo.png" 
-            alt="AirMarket Logo" 
-            style={{ 
-              height: 32,
-              width: 'auto',
-              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
-            }}
-          />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <img 
+              src="https://www.airmarket.mn/assets/images/airmarket_logo.png" 
+              alt="AirMarket Logo" 
+              style={{ 
+                height: 32,
+                width: 'auto',
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
+              }}
+            />
+            <img 
+              src="https://user.globalsim.mn/static/media/globalsimlogo.f25ee68ddbfa49c67854.png" 
+              alt="GlobalSIM Logo" 
+              style={{ 
+                height: 32,
+                width: 'auto',
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
+              }}
+            />
+          </Box>
           <Typography variant="h5" sx={{ 
             color: '#dc004e',
             fontWeight: 600

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Login from './pages/Login';
@@ -7,7 +7,7 @@ import ActivateSIM from './components/ActivateSIM';
 import Orders from './pages/Orders';
 import DataUsage from './pages/DataUsage';
 import Navigation from './components/Navigation';
-import { useAuth } from './services/authService';
+import { isAuthenticated } from './services/authService';
 
 const theme = createTheme({
   palette: {
@@ -38,42 +38,49 @@ const theme = createTheme({
   },
 });
 
-function App() {
-  const { isAuthenticated } = useAuth();
+// Protected route component
+const ProtectedRoute = ({ children }) => {
+  if (!isAuthenticated()) {
+    // Redirect to login if not authenticated
+    return <Navigate to="/login" replace />;
+  }
+  
+  return (
+    <>
+      <Navigation />
+      {children}
+    </>
+  );
+};
 
+function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <Routes>
+          {/* Redirect root to orders */}
+          <Route path="/" element={<Navigate to="/orders" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/data/:orderId" element={<DataUsage />} />
           <Route
             path="/activate"
             element={
-              isAuthenticated() ? (
-                <>
-                  <Navigation />
-                  <ActivateSIM />
-                </>
-              ) : (
-                <Login />
-              )
+              <ProtectedRoute>
+                <ActivateSIM />
+              </ProtectedRoute>
             }
           />
           <Route
-            path="/"
+            path="/orders"
             element={
-              isAuthenticated() ? (
-                <>
-                  <Navigation />
-                  <Orders />
-                </>
-              ) : (
-                <Login />
-              )
+              <ProtectedRoute>
+                <Orders />
+              </ProtectedRoute>
             }
           />
+          {/* Fallback route - redirect to orders */}
+          <Route path="*" element={<Navigate to="/orders" replace />} />
         </Routes>
       </Router>
     </ThemeProvider>
