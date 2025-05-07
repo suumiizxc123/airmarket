@@ -12,10 +12,10 @@ import { useAuth } from './services/authService';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: '#dc004e',
     },
     secondary: {
-      main: '#dc004e',
+      main: '#ff4081',
     },
   },
   components: {

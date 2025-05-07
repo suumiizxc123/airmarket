@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Tab, Tabs, Typography, CircularProgress, Alert, Grid, Paper, Container, useTheme } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Paper, Container, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import OrderList from '../components/OrderList';
 import OrderForm from '../components/OrderForm';
@@ -13,7 +13,6 @@ import {
 function Orders() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const [tab, setTab] = React.useState(0);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,8 +42,35 @@ function Orders() {
     return null;
   }
 
-  const handleTabChange = (event, newValue) => {
-    setTab(newValue);
+  const handleCreateOrder = async (orderData) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const newOrder = await createOrder(orderData);
+      setOrders([newOrder, ...orders]); // Add new order to the top of the list
+      return newOrder;
+    } catch (error) {
+      console.error('Error creating order:', error);
+      throw new Error('Failed to create order. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleActivateSIM = async (last6Digits) => {
+    try {
+      setLoading(true);
+      setError(null);
+      await activateSIM(last6Digits);
+      // Refresh orders after activation
+      const updatedOrders = await getOrders();
+      setOrders(updatedOrders);
+    } catch (error) {
+      console.error('Error activating SIM:', error);
+      setError('Failed to activate SIM. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -53,6 +79,7 @@ function Orders() {
       minHeight: '100vh',
       pt: 4,
       pb: 4,
+      background: 'linear-gradient(135deg, #ffeeee 0%, #ffffff 100%)',
     }}>
       <Container maxWidth="xl">
         <Box sx={{
@@ -66,7 +93,7 @@ function Orders() {
           <Box>
             <Typography variant="h4" component="h1" gutterBottom sx={{
               fontWeight: 700,
-              color: theme.palette.primary.main,
+              color: '#dc004e',
               mb: 1,
             }}>
               SIM Orders Management
@@ -77,87 +104,42 @@ function Orders() {
           </Box>
         </Box>
 
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-          <Tabs value={tab} onChange={handleTabChange} centered>
-            <Tab label="Create Order" />
-            <Tab label="View Orders" />
-          </Tabs>
+        {/* Order Creation Section - Now at the top */}
+        <Box sx={{ mb: 4 }}>
+          <OrderForm onCreate={handleCreateOrder} />
         </Box>
 
-        {tab === 0 && (
-          <OrderForm 
-            onCreate={async (orderData) => {
-              try {
-                setLoading(true);
-                setError(null);
-                const newOrder = await createOrder(orderData);
-                setOrders([...orders, newOrder]);
-              } catch (error) {
-                console.error('Error creating order:', error);
-                setError('Failed to create order. Please try again later.');
-              } finally {
-                setLoading(false);
-              }
-            }}
-          />
-        )}
-
-        {tab === 1 && (
-          <Box sx={{ p: 3 }}>
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
-              </Alert>
-            )}
-            {loading ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                <CircularProgress color="primary" size={40} />
-              </Box>
-            ) : (
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <Paper
-                    sx={{
-                      p: 3,
-                      borderRadius: 2,
-                      boxShadow: theme.shadows[3],
-                      bgcolor: theme.palette.background.paper,
-                    }}
-                  >
-                    <OrderList 
-                      orders={orders}
-                      onActivate={async (last6Digits) => {
-                        try {
-                          setLoading(true);
-                          setError(null);
-                          await activateSIM(last6Digits);
-                          const updatedOrders = await getOrders();
-                          setOrders(updatedOrders);
-                        } catch (error) {
-                          console.error('Error activating SIM:', error);
-                          setError('Failed to activate SIM. Please try again later.');
-                        } finally {
-                          setLoading(false);
-                        }
-                      }}
-                    />
-                  </Paper>
-                </Grid>
-              </Grid>
-            )}
-          </Box>
-        )}
+        {/* Order List Section - Now below the creation form */}
+        <Paper
+          sx={{
+            p: 3,
+            borderRadius: 2,
+            boxShadow: '0 4px 20px rgba(220, 0, 78, 0.1)',
+            bgcolor: theme.palette.background.paper,
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: '#dc004e' }}>
+            Current Orders
+          </Typography>
+          
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+          
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress color="secondary" size={40} />
+            </Box>
+          ) : (
+            <OrderList 
+              orders={orders}
+              onActivate={handleActivateSIM}
+            />
+          )}
+        </Paper>
       </Container>
-      {loading && (
-        <Box sx={{ mt: 2 }}>
-          <CircularProgress />
-        </Box>
-      )}
-      {error && (
-        <Box sx={{ mt: 2 }}>
-          <Alert severity="error">{error}</Alert>
-        </Box>
-      )}
     </Box>
   );
 }

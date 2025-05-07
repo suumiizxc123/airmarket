@@ -1,173 +1,130 @@
-import React from 'react';
-import { Box, Button, TextField, Typography, Alert } from '@mui/material';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Box, Button, TextField, Typography, Paper, Grid, Alert } from '@mui/material';
 
 const OrderForm = ({ onCreate }) => {
-  const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: {
-      externalOrderId: 'EP1ASXAXDAD',
-      iccid: '8982200000000000000',
-      last6Digits: '123456',
-      simType: 'physical',
-      country: 'South Korea',
-      status: 'pending',
-      dataGB: '3',
-      duration: '7',
-      orderType: 'gift',
-      soldPrice: '10000',
-      userId: 'air001',
-      name: 'Bayarkhuu'
-    }
-  });
-  const [success, setSuccess] = React.useState(false);
-  const [error, setError] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
+  const [last6Digits, setLast6Digits] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = async (data) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validate input
+    if (!last6Digits || last6Digits.length !== 6 || !/^\d+$/.test(last6Digits)) {
+      setError('Please enter valid 6 digits');
+      return;
+    }
+
     try {
-      setLoading(true);
-      await onCreate(data);
-      setSuccess(true);
+      setIsSubmitting(true);
       setError('');
+      
+      // Create order with default values, only using the last6Digits
+      const orderData = {
+        last6Digits,
+        // Default values that are hidden from the user
+        country: 'Korea',
+        dataGB: '3',
+        duration: '7 days',
+        price: '10000'
+      };
+      
+      await onCreate(orderData);
+      setSuccess('SIM card order created successfully!');
+      setLast6Digits(''); // Reset form
+      
+      // Clear success message after 3 seconds
       setTimeout(() => {
-        setSuccess(false);
-        navigate('/orders');
-      }, 2000);
-    } catch (error) {
-      setError(error.message || 'Order creation failed');
-      setSuccess(false);
+        setSuccess('');
+      }, 3000);
+      
+    } catch (err) {
+      setError(err.message || 'Failed to create order. Please try again.');
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-        maxWidth: 400,
-        margin: '0 auto',
-        p: 3,
-        bgcolor: 'background.paper',
-        borderRadius: 2,
-        boxShadow: 1,
-      }}
-    >
-      <Typography variant="h6" gutterBottom>
-        Create New Order
+    <Paper sx={{ 
+      p: 4, 
+      borderRadius: 2,
+      boxShadow: '0 4px 20px rgba(220, 0, 78, 0.08)',
+      maxWidth: 600,
+      mx: 'auto'
+    }}>
+      <Typography variant="h5" component="h2" gutterBottom sx={{ 
+        fontWeight: 600,
+        color: '#dc004e',
+        mb: 3
+      }}>
+        Create New SIM Order
       </Typography>
-
-      <TextField
-        fullWidth
-        label="Phone Number"
-        {...register('phoneNumber', {
-          required: 'Phone number is required',
-          pattern: {
-            value: /^[0-9]{8}$/,
-            message: 'Please enter a valid 8-digit phone number',
-          },
-        })}
-        error={!!errors.phoneNumber}
-        helperText={errors.phoneNumber?.message}
-      />
-
-      <TextField
-        fullWidth
-        label="Last 6 Digits"
-        {...register('last6Digits', {
-          pattern: {
-            value: /^[0-9]{6}$/,
-            message: 'Please enter exactly 6 digits',
-          },
-        })}
-        error={!!errors.last6Digits}
-        helperText={errors.last6Digits?.message}
-        sx={{ mb: 2 }}
-      />
-
-      <TextField
-        fullWidth
-        label="Data (GB)"
-        {...register('dataGB', {
-          pattern: {
-            value: /^[0-9]+$/,
-            message: 'Please enter a valid number',
-          },
-        })}
-        error={!!errors.dataGB}
-        helperText={errors.dataGB?.message}
-        sx={{ mb: 2 }}
-      />
-
-      <TextField
-        fullWidth
-        label="Duration (days)"
-        {...register('duration', {
-          pattern: {
-            value: /^[0-9]+$/,
-            message: 'Please enter a valid number',
-          },
-        })}
-        error={!!errors.duration}
-        helperText={errors.duration?.message}
-        sx={{ mb: 2 }}
-      />
-
-      <TextField
-        fullWidth
-        label="Order Type"
-        {...register('orderType')}
-        error={!!errors.orderType}
-        helperText={errors.orderType?.message}
-        sx={{ mb: 2 }}
-      />
-
-      <TextField
-        fullWidth
-        label="Price (KRW)"
-        {...register('soldPrice', {
-          pattern: {
-            value: /^[0-9]+$/,
-            message: 'Please enter a valid number',
-          },
-        })}
-        error={!!errors.soldPrice}
-        helperText={errors.soldPrice?.message}
-      />
-
-      {success && (
-        <Alert severity="success" sx={{ my: 2 }}>
-          SIM card created and activated successfully!
-        </Alert>
-      )}
-
+      
       {error && (
-        <Alert severity="error" sx={{ my: 2 }}>
+        <Alert severity="error" sx={{ mb: 3 }}>
           {error}
         </Alert>
       )}
-
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        size="large"
-        disabled={loading}
-        sx={{
-          mt: 2,
-          py: 1.5,
-          fontSize: '1.1rem',
-        }}
-      >
-        {loading ? 'Processing...' : 'Create & Activate Order'}
-      </Button>
-    </Box>
+      
+      {success && (
+        <Alert severity="success" sx={{ mb: 3 }}>
+          {success}
+        </Alert>
+      )}
+      
+      <Box component="form" onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <TextField
+              label="Last 6 Digits of ICCID"
+              fullWidth
+              value={last6Digits}
+              onChange={(e) => setLast6Digits(e.target.value)}
+              inputProps={{ maxLength: 6 }}
+              placeholder="Enter last 6 digits"
+              helperText="Enter the last 6 digits of the SIM card ICCID"
+              required
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '10px',
+                },
+                '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#dc004e',
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: '#dc004e',
+                }
+              }}
+            />
+          </Grid>
+        </Grid>
+        
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="secondary"
+            size="large"
+            disabled={isSubmitting}
+            sx={{ 
+              px: 4, 
+              py: 1.5,
+              borderRadius: '10px',
+              boxShadow: '0 4px 10px rgba(220, 0, 78, 0.3)',
+              background: 'linear-gradient(45deg, #dc004e 30%, #ff4081 90%)',
+              '&:hover': {
+                boxShadow: '0 6px 12px rgba(220, 0, 78, 0.4)',
+                background: 'linear-gradient(45deg, #c50046 30%, #e91e63 90%)',
+              }
+            }}
+          >
+            {isSubmitting ? 'Creating...' : 'Create Order'}
+          </Button>
+        </Box>
+      </Box>
+    </Paper>
   );
 };
 

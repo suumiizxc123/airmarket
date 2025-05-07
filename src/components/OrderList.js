@@ -55,15 +55,15 @@ const OrderList = ({ orders }) => {
         </Stack>
       ),
     },
-    {
-      header: 'Phone Number',
-      accessorKey: 'phoneNumber',
-      cell: ({ row }) => (
-        <Typography variant="body2" color="primary">
-          {row.original.phoneNumber}
-        </Typography>
-      ),
-    },
+    // {
+    //   header: 'Phone Number',
+    //   accessorKey: 'phoneNumber',
+    //   cell: ({ row }) => (
+    //     <Typography variant="body2" color="primary">
+    //       {row.original.phoneNumber}
+    //     </Typography>
+    //   ),
+    // },
     {
       header: 'Full SIM Number',
       accessorKey: 'iccid',

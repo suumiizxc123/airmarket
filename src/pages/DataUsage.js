@@ -47,7 +47,7 @@ const DataUsage = () => {
       alignItems: 'center',
       px: 3,
       py: 4,
-      background: 'linear-gradient(135deg, #1976d2 0%, #1557b0 100%)',
+      background: 'linear-gradient(135deg, #dc004e 0%, #c50046 100%)',
       backgroundSize: '400% 400%',
       animation: 'gradient 15s ease infinite'
     }}>
@@ -57,7 +57,7 @@ const DataUsage = () => {
         bgcolor: 'rgba(255, 255, 255, 0.95)',
         borderRadius: 16,
         p: 3,
-        boxShadow: '0 15px 30px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0 15px 30px rgba(220, 0, 78, 0.2)',
         backdropFilter: 'blur(8px)',
         mb: 4
       }}>
@@ -77,7 +77,7 @@ const DataUsage = () => {
             }}
           />
           <Typography variant="h5" sx={{ 
-            color: '#1976d2',
+            color: '#dc004e',
             fontWeight: 600
           }}>
             SIM Card Usage
@@ -87,8 +87,8 @@ const DataUsage = () => {
         <Paper sx={{ 
           p: 3,
           borderRadius: 12,
-          background: 'linear-gradient(145deg, #f5f9ff 0%, #e8f4ff 100%)',
-          boxShadow: '0 10px 20px rgba(25, 118, 210, 0.1)',
+          background: 'linear-gradient(145deg, #fff5f8 0%, #ffebf1 100%)',
+          boxShadow: '0 10px 20px rgba(220, 0, 78, 0.1)',
           mb: 3,
           overflow: 'hidden',
           position: 'relative'
