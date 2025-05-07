@@ -1,23 +1,56 @@
 import mockOrders from '../mock/orders.json';
-// We'll keep axios for future use but add a comment to explain
-// import axios from 'axios'; // Uncomment when API is ready
+import axios from 'axios';
 import { getToken } from './authService';
 
-// API URL from environment variable - will be used when API is ready
-// const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+// API URL from environment variable
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+
+// Configure axios with timeout and auth token
+const api = axios.create({
+  baseURL: API_URL,
+  timeout: 30000, // 30 seconds timeout
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// Add request interceptor to include auth token
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Add response interceptor for error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Handle timeout errors
+    if (error.code === 'ECONNABORTED') {
+      console.error('Request timed out');
+      return Promise.reject(new Error('The request took too long to complete. Please try again.'));
+    }
+    
+    // Handle network errors
+    if (!error.response) {
+      console.error('Network error:', error);
+      return Promise.reject(new Error('Network error. Please check your connection.'));
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
+// For development/demo, use mock data
+const useMockData = process.env.NODE_ENV !== 'production' || !API_URL.includes('http');
 
 // Mock API delay
 const mockAPIDelay = (ms = 1000) => new Promise(resolve => setTimeout(resolve, ms));
-
-// Configure axios with auth token - will be used when API is ready
-// const getAuthHeader = () => {
-//   const token = getToken();
-//   return {
-//     headers: {
-//       Authorization: token ? `Bearer ${token}` : '',
-//     },
-//   };
-// };
 
 // Default values for SIM card activation
 const DEFAULT_VALUES = {

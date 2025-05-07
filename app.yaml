@@ -1,0 +1,17 @@
+name: airmarket-admin
+services:
+  - name: web
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: your-username/your-repo-name
+    build_command: npm install && npm run build
+    run_command: npm run start:prod
+    http_port: 8080
+    routes:
+      - path: /
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PUBLIC_URL
+        value: . 
