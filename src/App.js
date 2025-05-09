@@ -8,6 +8,7 @@ import Orders from './pages/Orders';
 import DataUsage from './pages/DataUsage';
 import Navigation from './components/Navigation';
 import { isAuthenticated } from './services/authService';
+import DataPage from './pages/DataPage';
 
 const theme = createTheme({
   palette: {
@@ -62,7 +63,7 @@ function App() {
           {/* Redirect root to orders */}
           <Route path="/" element={<Navigate to="/orders" replace />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/data/:orderId" element={<DataUsage />} />
+          <Route path="/data/:orderId" element={<DataPage />} />
           <Route
             path="/activate"
             element={

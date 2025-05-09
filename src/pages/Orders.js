@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Typography, CircularProgress, Alert, Container, useTheme, Paper } from '@mui/material';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import OrderForm from '../components/OrderForm';
 import OrderList from '../components/OrderList';
 import { isAuthenticated } from '../services/authService';
@@ -8,39 +8,47 @@ import { createOrder, getOrders, bulkImportSims } from '../services/orderService
 
 function Orders() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const theme = useTheme();
 
-  // Check authentication and fetch orders in a single useEffect
+  const fetchOrders = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await getOrders();
+      setOrders(data);
+      setError(null);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      setError('Failed to fetch orders. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    // Check if user is authenticated
     if (!isAuthenticated()) {
       navigate('/login');
       return;
     }
 
-    // Fetch orders
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        const data = await getOrders();
-        setOrders(data);
-        setError(null);
-      } catch (error) {
-        console.error('Error fetching orders:', error);
-        setError('Failed to fetch orders. Please try again later.');
-      } finally {
-        setLoading(false);
+    let isMounted = true;
+
+    const loadOrders = async () => {
+      if (isMounted) {
+        await fetchOrders();
       }
     };
 
-    fetchOrders();
-  }, [navigate, location.pathname]); // Only re-run if navigation changes
+    loadOrders();
 
-  const handleCreateOrder = async (orderData) => {
+    return () => {
+      isMounted = false;
+    };
+  }, [navigate, fetchOrders]);
+
+  const handleCreateOrder = useCallback(async (orderData) => {
     try {
       setLoading(true);
       setError(null);
@@ -54,9 +62,9 @@ function Orders() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleBulkImport = async (simCards) => {
+  const handleBulkImport = useCallback(async (simCards) => {
     try {
       setLoading(true);
       setError(null);
@@ -70,7 +78,7 @@ function Orders() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Show loading state while checking auth and fetching initial data
   if (loading && orders.length === 0) {
@@ -153,4 +161,4 @@ function Orders() {
   );
 }
 
-export default Orders;
+export default React.memo(Orders);

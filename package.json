@@ -54,5 +54,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "https://esimbackend-78d0b12a97f7.herokuapp.com"
 }
