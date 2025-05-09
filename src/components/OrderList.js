@@ -68,8 +68,9 @@ const OrderList = React.memo(({ orders }) => {
   }, []);
 
   const handleOrderClick = (orderId) => {
-    // Redirect to the specified URL using http for localhost
-    window.location.href = `http://localhost:8080/#/data/${orderId}`;
+    // Use the current window location to construct the URL
+    const baseUrl = window.location.origin;
+    window.location.href = `${baseUrl}/#/data/${orderId}`;
   };
 
   const fetchOrderDetails = async (orderId) => {
