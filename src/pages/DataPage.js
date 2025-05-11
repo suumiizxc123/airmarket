@@ -19,19 +19,29 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
-  alpha
+  alpha,
+  List,
+  ListItem,
+  MobileStepper
 } from '@mui/material';
 import { 
   DataUsage as DataUsageIcon, 
   Public as PublicIcon, 
   SimCard as SimCardIcon,
   CalendarToday as CalendarIcon,
-  ArrowBackIos as ArrowBackIcon,
-  ArrowForwardIos as ArrowForwardIcon,
+  ArrowBackIos as ArrowBackIos,
+  ArrowForwardIos as ArrowForwardIos,
   Close as CloseIcon,
   QrCode as QrCodeIcon,
-  ShoppingCart as ShoppingCartIcon
+  ShoppingCart as ShoppingCartIcon,
+  PlayCircleOutlined,
+  ZoomIn as ZoomInIcon
 } from '@mui/icons-material';
+
+// Import images
+import iphone_manual_1_2 from '../images/iphone_manual_1_2.jpg';
+import iphone_manual_3_4 from '../images/iphone_manual_3_4.jpg';
+import iphone_manual_5_6 from '../images/iphone_manual_5_6.jpg';
 
 const DataPage = () => {
   const { orderId } = useParams();
@@ -43,7 +53,22 @@ const DataPage = () => {
   const [paymentDialog, setPaymentDialog] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
   const [creatingOrder, setCreatingOrder] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const theme = useTheme();
+
+  // Image data for the carousel
+  const images = [
+    iphone_manual_1_2,
+    iphone_manual_3_4,
+    iphone_manual_5_6
+  ];
+
+  const imageAlts = [
+    "eSIM Installation Step 1-2",
+    "eSIM Installation Step 3-4",
+    "eSIM Installation Step 5-6"
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -208,6 +233,10 @@ const DataPage = () => {
     window.location.href = url;
   };
 
+  const handleZoomImage = (index) => {
+    // Implementation of handleZoomImage function
+  };
+
   if (loading) {
     return (
       <Box sx={{ 
@@ -266,7 +295,7 @@ const DataPage = () => {
             letterSpacing: '-0.5px'
           }}
         >
-          SIM Card Details
+          СИМ Картын мэдээлэл
         </Typography>
 
         <Stack spacing={4}>
@@ -291,7 +320,7 @@ const DataPage = () => {
                 <SimCardIcon color="primary" sx={{ fontSize: 28 }} />
               </Box>
               <Typography variant="h5" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
-                Basic Information
+                Үндсэн мэдээлэл
               </Typography>
             </Stack>
             <Divider sx={{ mb: 3 }} />
@@ -326,7 +355,7 @@ const DataPage = () => {
                   </Box>
                   <Box>
                     <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }}>
-                      Country
+                      Улс
                     </Typography>
                     <Typography variant="body1" sx={{ fontWeight: 500 }}>
                       {country}
@@ -345,7 +374,7 @@ const DataPage = () => {
                   </Box>
                   <Box>
                     <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }}>
-                      Travel Day
+                      Аялах өдөр
                     </Typography>
                     <Typography variant="body1" sx={{ fontWeight: 500 }}>
                       {data.travelday}
@@ -377,7 +406,7 @@ const DataPage = () => {
                 <DataUsageIcon color="primary" sx={{ fontSize: 28 }} />
               </Box>
               <Typography variant="h5" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
-                Data Usage
+                Дата ашиглалт
               </Typography>
             </Stack>
             <Divider sx={{ mb: 3 }} />
@@ -410,7 +439,7 @@ const DataPage = () => {
                   </Typography>
                 </Stack>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1, ml: 1 }}>
-                  {((data.usedgb / data.allgb) * 100).toFixed(1)}% used
+                  {((data.usedgb / data.allgb) * 100).toFixed(1)}% ашиглагдсан
                 </Typography>
               </Box>
             </Stack>
@@ -437,7 +466,7 @@ const DataPage = () => {
                 <ShoppingCartIcon color="primary" sx={{ fontSize: 28 }} />
               </Box>
               <Typography variant="h5" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
-                Available Plans
+                Дата багцууд
               </Typography>
             </Stack>
             <Divider sx={{ mb: 3 }} />
@@ -469,7 +498,7 @@ const DataPage = () => {
                 {durationTabs.map((duration) => (
                   <Tab 
                     key={duration}
-                    label={duration === 'all' ? 'All Plans' : duration} 
+                    label={duration === 'all' ? 'All Plans' : duration.replace("days", "хоног")} 
                     value={duration}
                   />
                 ))}
@@ -477,18 +506,20 @@ const DataPage = () => {
             </Box>
 
             {/* Plans Grid */}
-            <Grid container spacing={3}>
+            <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }}>
               {currentPlans.map((plan) => (
-                <Grid item xs={12} sm={6} md={4} key={plan.rowid}>
+                <Grid item xs={6} sm={6} md={4} key={plan.rowid}>
                   <Paper 
                     elevation={0}
                     sx={{ 
-                      p: 3,
+                      p: { xs: 1.5, sm: 2, md: 3 },
                       height: '100%',
                       border: '1px solid',
                       borderColor: alpha(theme.palette.primary.main, 0.1),
-                      borderRadius: 3,
+                      borderRadius: 2,
                       transition: 'all 0.3s ease',
+                      display: 'flex',
+                      flexDirection: 'column',
                       '&:hover': {
                         transform: 'translateY(-4px)',
                         borderColor: theme.palette.primary.main,
@@ -496,15 +527,35 @@ const DataPage = () => {
                       }
                     }}
                   >
-                    <Stack spacing={2}>
-                      <Typography variant="h4" color="primary" sx={{ fontWeight: 700 }}>
+                    <Stack spacing={{ xs: 1, sm: 1.5, md: 2 }} sx={{ flex: 1 }}>
+                      <Typography 
+                        variant="h4" 
+                        color="primary" 
+                        sx={{ 
+                          fontWeight: 700,
+                          fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' }
+                        }}
+                      >
                         {formatPrice(plan.price)}
                       </Typography>
-                      <Typography variant="h5" fontWeight="bold" sx={{ color: theme.palette.primary.main }}>
+                      <Typography 
+                        variant="h5" 
+                        fontWeight="bold" 
+                        sx={{ 
+                          color: theme.palette.primary.main,
+                          fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' }
+                        }}
+                      >
                         {plan.datagb}GB
                       </Typography>
-                      <Typography variant="body1" color="text.secondary">
-                        {plan.duration.replace(/хоног/g, 'days')}
+                      <Typography 
+                        variant="body1" 
+                        color="text.secondary"
+                        sx={{ 
+                          fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' }
+                        }}
+                      >
+                        {plan.duration.replace('days', '')}
                       </Typography>
                       <Chip 
                         label={plan.countryname}
@@ -514,6 +565,8 @@ const DataPage = () => {
                           bgcolor: alpha(theme.palette.primary.main, 0.1),
                           color: theme.palette.primary.main,
                           fontWeight: 500,
+                          fontSize: { xs: '0.625rem', sm: '0.75rem', md: '0.875rem' },
+                          height: { xs: 20, sm: 24, md: 28 },
                           '&:hover': {
                             bgcolor: alpha(theme.palette.primary.main, 0.2),
                           }
@@ -524,27 +577,247 @@ const DataPage = () => {
                         fullWidth
                         onClick={() => handleCreateOrder(plan)}
                         disabled={creatingOrder}
-                        startIcon={<ShoppingCartIcon />}
+                        startIcon={<ShoppingCartIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' } }} />}
                         sx={{
-                          mt: 2,
-                          py: 1.5,
+                          mt: 'auto',
+                          py: { xs: 0.75, sm: 1, md: 1.5 },
+                          px: { xs: 1, sm: 1.5, md: 2 },
                           borderRadius: 2,
                           textTransform: 'none',
-                          fontSize: '1rem',
+                          fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' },
                           fontWeight: 600,
+                          minHeight: { xs: 32, sm: 36, md: 40 },
                           background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                           '&:hover': {
                             background: `linear-gradient(90deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
                           }
                         }}
                       >
-                        {creatingOrder ? 'Processing...' : 'Buy Now'}
+                        {creatingOrder ? 'Ажиллаж байна...' : 'Худалдаж авах'}
                       </Button>
                     </Stack>
                   </Paper>
                 </Grid>
               ))}
             </Grid>
+          </Paper>
+
+          {/* eSIM Guide Section */}
+          <Paper 
+            elevation={0}
+            sx={{ 
+              p: 4,
+              borderRadius: 4,
+              background: 'white',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              border: '1px solid',
+              borderColor: alpha(theme.palette.primary.main, 0.1)
+            }}
+          >
+            <Stack direction="row" spacing={2} alignItems="center" mb={3}>
+              <Box sx={{ 
+                p: 1.5, 
+                borderRadius: 2, 
+                bgcolor: alpha(theme.palette.primary.main, 0.1) 
+              }}>
+                <QrCodeIcon color="primary" sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
+                eSIM суулгах заавар
+              </Typography>
+            </Stack>
+            <Divider sx={{ mb: 3 }} />
+
+            <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
+              <Paper 
+                elevation={0}
+                sx={{ 
+                  p: 3,
+                  bgcolor: alpha(theme.palette.primary.main, 0.05),
+                  borderRadius: 3
+                }}
+              >
+                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+                  <Typography variant="h6" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
+                    Global eSIM iPhone утсанд суулгах заавар
+                  </Typography>
+                  <Button
+                    variant="text"
+                    onClick={() => setShowVideo(!showVideo)}
+                    startIcon={<PlayCircleOutlined />}
+                    sx={{ 
+                      color: theme.palette.primary.main,
+                      '&:hover': { 
+                        bgcolor: alpha(theme.palette.primary.main, 0.1)
+                      } 
+                    }}
+                  >
+                    {showVideo ? "Хаах" : "Видео үзэх"}
+                  </Button>
+                </Stack>
+
+                {/* Image Carousel */}
+                <Box sx={{ mt: 3, mb: 4, position: 'relative' }}>
+                  <Box sx={{ position: 'relative', width: '100%', height: 300 }}>
+                    {images.map((img, index) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          position: 'absolute',
+                          width: '100%',
+                          height: '100%',
+                          opacity: currentSlide === index ? 1 : 0,
+                          transition: 'opacity 0.5s ease-in-out',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        <Box
+                          component="img"
+                          src={img}
+                          alt={imageAlts[index]}
+                          sx={{
+                            maxWidth: '100%',
+                            maxHeight: '100%',
+                            objectFit: 'contain',
+                            borderRadius: 2,
+                            cursor: 'pointer'
+                          }}
+                          onClick={() => handleZoomImage(index)}
+                        />
+                        <IconButton
+                          onClick={() => handleZoomImage(index)}
+                          sx={{
+                            position: 'absolute',
+                            bottom: 8,
+                            right: 8,
+                            bgcolor: alpha(theme.palette.primary.main, 0.8),
+                            color: 'white',
+                            '&:hover': { 
+                              bgcolor: theme.palette.primary.main 
+                            }
+                          }}
+                        >
+                          <ZoomInIcon />
+                        </IconButton>
+                      </Box>
+                    ))}
+                  </Box>
+
+                  {/* Navigation Buttons */}
+                  <IconButton
+                    onClick={() => setCurrentSlide((prev) => (prev > 0 ? prev - 1 : images.length - 1))}
+                    sx={{
+                      position: 'absolute',
+                      left: 8,
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      bgcolor: alpha(theme.palette.primary.main, 0.8),
+                      color: 'white',
+                      '&:hover': { 
+                        bgcolor: theme.palette.primary.main 
+                      }
+                    }}
+                  >
+                    <ArrowBackIos />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => setCurrentSlide((prev) => (prev < images.length - 1 ? prev + 1 : 0))}
+                    sx={{
+                      position: 'absolute',
+                      right: 8,
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      bgcolor: alpha(theme.palette.primary.main, 0.8),
+                      color: 'white',
+                      '&:hover': { 
+                        bgcolor: theme.palette.primary.main 
+                      }
+                    }}
+                  >
+                    <ArrowForwardIos />
+                  </IconButton>
+
+                  {/* Dots */}
+                  <MobileStepper
+                    steps={images.length}
+                    position="static"
+                    activeStep={currentSlide}
+                    sx={{
+                      position: 'absolute',
+                      bottom: 8,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      bgcolor: 'transparent',
+                      '& .MuiMobileStepper-dot': {
+                        bgcolor: alpha(theme.palette.primary.main, 0.3),
+                        '&.MuiMobileStepper-dotActive': {
+                          bgcolor: theme.palette.primary.main
+                        }
+                      }
+                    }}
+                    backButton={null}
+                    nextButton={null}
+                  />
+                </Box>
+
+                {/* Video Section */}
+                {showVideo && (
+                  <Box sx={{ 
+                    position: 'relative',
+                    overflow: 'hidden',
+                    borderRadius: 2,
+                    pt: '56.25%',
+                    mb: 3
+                  }}>
+                    <iframe
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%'
+                      }}
+                      src="https://www.youtube.com/embed/NeQuWxxXDMg"
+                      title="eSIM Installation Guide"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </Box>
+                )}
+
+                {/* Instructions */}
+                <Stack spacing={3}>
+                  <Box>
+                    <Typography variant="subtitle1" sx={{ color: theme.palette.primary.main, fontWeight: 600, mb: 1 }}>
+                      1. eSIM-ийг QR кодоор идэвхжүүлэх
+                    </Typography>
+                    <List sx={{ pl: 2 }}>
+                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• iPhone утасныхаа Settings (Тохиргоо) цэс рүү орно</ListItem>
+                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Cellular (Гар утасны сүлжээ) эсвэл Mobile Data цэсийг сонгоно</ListItem>
+                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Add eSIM (eSIM нэмэх) гэсэн сонголтыг дарна</ListItem>
+                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Use QR Code сонголтыг дарж, QR кодыг камер ашиглан уншуулна</ListItem>
+                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Add Cellular Plan хэсгийг дарж, eSIM-ээ суулгана</ListItem>
+                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Done (Дуусгах) товчийг дарж тохиргоогоо хадгална</ListItem>
+                    </List>
+                  </Box>
+
+                  <Box>
+                    <Typography variant="subtitle1" sx={{ color: theme.palette.primary.main, fontWeight: 600, mb: 1 }}>
+                      2. eSIM-ээ идэвхжүүлж ашиглах
+                    </Typography>
+                    <List sx={{ pl: 2 }}>
+                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Settings - Cellular хэсэгт орж, eSIM идэвхтэй эсэхийг шалгана</ListItem>
+                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Хэрэв 2 SIM ашиглаж байгаа бол Primary/Secondary тохиргоог хийнэ</ListItem>
+                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Cellular - [eSIM нэр] - Data Roaming-ийг асаах</ListItem>
+                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Cellular Data дата ашиглах Global SIM-ээ сонгоно</ListItem>
+                    </List>
+                  </Box>
+                </Stack>
+              </Paper>
+            </Box>
           </Paper>
         </Stack>
       </Box>
@@ -569,7 +842,7 @@ const DataPage = () => {
         }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="h5" sx={{ fontWeight: 600 }}>
-              Payment Details
+              Худалдаж авах
             </Typography>
             <IconButton 
               onClick={handleClosePaymentDialog} 
@@ -588,6 +861,35 @@ const DataPage = () => {
         <DialogContent sx={{ p: 3 }}>
           {paymentData && (
             <Stack spacing={3}>
+              {paymentData.qr_image && (
+                <Paper 
+                  elevation={0}
+                  sx={{ 
+                    p: 3,
+                    textAlign: 'center',
+                    border: '1px solid',
+                    borderColor: alpha(theme.palette.primary.main, 0.1),
+                    borderRadius: 3,
+                    bgcolor: alpha(theme.palette.primary.main, 0.02)
+                  }}
+                >
+                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: theme.palette.primary.main }}>
+                    QR кодоор төлөх
+                  </Typography>
+                  <Box
+                    component="img"
+                    src={`data:image/png;base64,${paymentData.qr_image}`}
+                    alt="Payment QR Code"
+                    sx={{ 
+                      maxWidth: 240,
+                      width: '100%',
+                      borderRadius: 2,
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.1)'
+                    }}
+                  />
+                </Paper>
+              )}
+
               <Paper 
                 elevation={0}
                 sx={{ 
@@ -644,34 +946,6 @@ const DataPage = () => {
                   </Stack>
                 </Paper>
               ))}
-
-              {paymentData.qr_image && (
-                <Paper 
-                  elevation={0}
-                  sx={{ 
-                    p: 3,
-                    textAlign: 'center',
-                    border: '1px solid',
-                    borderColor: alpha(theme.palette.primary.main, 0.1),
-                    borderRadius: 3
-                  }}
-                >
-                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                    Scan QR Code
-                  </Typography>
-                  <Box
-                    component="img"
-                    src={`data:image/png;base64,${paymentData.qr_image}`}
-                    alt="Payment QR Code"
-                    sx={{ 
-                      maxWidth: 240,
-                      width: '100%',
-                      borderRadius: 2,
-                      boxShadow: '0 4px 16px rgba(0,0,0,0.1)'
-                    }}
-                  />
-                </Paper>
-              )}
             </Stack>
           )}
         </DialogContent>
@@ -686,7 +960,7 @@ const DataPage = () => {
               px: 3
             }}
           >
-            Close
+            Хаах
           </Button>
         </DialogActions>
       </Dialog>
