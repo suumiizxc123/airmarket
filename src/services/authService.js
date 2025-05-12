@@ -1,56 +1,80 @@
-import { mockUsers } from '../mock/data';
-
-// Mock API delay
-const mockAPIDelay = (ms = 1000) => new Promise(resolve => setTimeout(resolve, ms));
+const API_URL = 'https://esimbackend-78d0b12a97f7.herokuapp.com';
 
 // Replace cookie-based authentication with localStorage
-const setAuth = (token, user) => {
-  localStorage.setItem('token', token);
-  localStorage.setItem('user', JSON.stringify(user));
+const setAuth = (userData) => {
+  localStorage.setItem('user', JSON.stringify(userData));
 };
 
 const clearAuth = () => {
-  localStorage.removeItem('token');
   localStorage.removeItem('user');
 };
 
 export const login = async (username, password) => {
   try {
-    await mockAPIDelay(); // Simulate API delay
-    
-    const user = mockUsers.find(u => 
-      u.username === username && u.password === password
-    );
+    const params = new URLSearchParams();
+    params.append('username', username);
+    params.append('password', password);
 
-    if (!user) {
-      throw new Error('Invalid credentials');
+    const response = await fetch(`${API_URL}/api/user/login`, {
+      method: 'POST',
+      body: params,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      mode: 'cors'
+    });
+
+    const data = await response.json();
+
+    if (response.status === 200 && data.message === 'success') {
+      const userData = {
+        uid: data.uid,
+        email: data.email,
+        role: data.role,
+        auth_token: data.auth_token,
+        pareto: data.pareto
+      };
+      
+      setAuth(userData);
+      return userData;
+    } else {
+      throw new Error(data.message || 'Login failed');
     }
-
-    const token = `mock-token-${Date.now()}`;
-    setAuth(token, user); // Use localStorage instead of cookies
-    
-    return {
-      token,
-      user: {
-        ...user,
-        password: undefined // Don't store password in response
-      }
-    };
   } catch (error) {
     throw new Error('Login failed');
   }
 };
 
-export const logout = () => {
-  clearAuth(); // Clear localStorage
+export const logout = async () => {
+  try {
+    const userData = getUser();
+    if (userData?.pareto) {
+      await fetch(`${API_URL}/api/user/logout`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': userData.pareto
+        },
+        mode: 'cors'
+      });
+    }
+  } catch (error) {
+    console.error('Logout failed:', error);
+  } finally {
+    clearAuth();
+  }
 };
 
 export const isAuthenticated = () => {
-  return localStorage.getItem('token') !== null;
+  const user = getUser();
+  return user !== null && user.pareto !== null;
 };
 
 export const getToken = () => {
-  return localStorage.getItem('token');
+  const user = getUser();
+  return user?.pareto || null;
 };
 
 export const getUser = () => {
@@ -61,37 +85,65 @@ export const getUser = () => {
 export const useAuth = () => {
   const login = async (username, password) => {
     try {
-      await mockAPIDelay();
-      
-      const user = mockUsers.find(u => 
-        u.username === username && u.password === password
-      );
+      const params = new URLSearchParams();
+      params.append('username', username);
+      params.append('password', password);
 
-      if (!user) {
-        throw new Error('Invalid credentials');
+      const response = await fetch(`${API_URL}/api/user/login`, {
+        method: 'POST',
+        body: params,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        mode: 'cors'
+      });
+
+      const data = await response.json();
+
+      if (response.status === 200 && data.message === 'success') {
+        const userData = {
+          uid: data.uid,
+          email: data.email,
+          role: data.role,
+          auth_token: data.auth_token,
+          pareto: data.pareto
+        };
+        
+        setAuth(userData);
+        return userData;
+      } else {
+        throw new Error(data.message || 'Login failed');
       }
-
-      const token = `mock-token-${Date.now()}`;
-      localStorage.setItem('token', token);
-      
-      return {
-        token,
-        user: {
-          ...user,
-          password: undefined // Don't store password in response
-        }
-      };
     } catch (error) {
       throw new Error('Login failed');
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
+  const logout = async () => {
+    try {
+      const userData = getUser();
+      if (userData?.pareto) {
+        await fetch(`${API_URL}/api/user/logout`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': userData.pareto
+          },
+          mode: 'cors'
+        });
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      clearAuth();
+    }
   };
 
   const isAuthenticated = () => {
-    return localStorage.getItem('token') !== null;
+    const user = getUser();
+    return user !== null && user.pareto !== null;
   };
 
   return {

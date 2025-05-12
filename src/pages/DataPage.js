@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
   Paper,
@@ -42,9 +42,12 @@ import {
 import iphone_manual_1_2 from '../images/iphone_manual_1_2.jpg';
 import iphone_manual_3_4 from '../images/iphone_manual_3_4.jpg';
 import iphone_manual_5_6 from '../images/iphone_manual_5_6.jpg';
+import guide1 from '../images/guide1.jpeg';
+import guide2 from '../images/guide2.jpeg';
 
 const DataPage = () => {
   const { orderId } = useParams();
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,19 +58,18 @@ const DataPage = () => {
   const [creatingOrder, setCreatingOrder] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [selectedPhone, setSelectedPhone] = useState('huawei');
   const theme = useTheme();
 
   // Image data for the carousel
   const images = [
-    iphone_manual_1_2,
-    iphone_manual_3_4,
-    iphone_manual_5_6
+    guide1,
+    guide2
   ];
 
   const imageAlts = [
-    "eSIM Installation Step 1-2",
-    "eSIM Installation Step 3-4",
-    "eSIM Installation Step 5-6"
+    "Huawei Phone Guide",
+    "Redmi Phone Guide"
   ];
 
   useEffect(() => {
@@ -75,8 +77,18 @@ const DataPage = () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch(`https://clientsvc.globalsim.mn/api/user/page/price-by-orderid?order_id=${orderId}`);
-        if (!response.ok) throw new Error('Failed to fetch data');
+
+        const response = await fetch(`https://clientsvc.globalsim.mn/api/user/page/price-by-orderid?order_id=${orderId}`, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+
         const result = await response.json();
         setData(result.data);
       } catch (err) {
@@ -623,7 +635,7 @@ const DataPage = () => {
                 <QrCodeIcon color="primary" sx={{ fontSize: 28 }} />
               </Box>
               <Typography variant="h5" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
-                eSIM суулгах заавар
+                Утасны тохиргоо
               </Typography>
             </Stack>
             <Divider sx={{ mb: 3 }} />
@@ -637,24 +649,39 @@ const DataPage = () => {
                   borderRadius: 3
                 }}
               >
-                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
-                  <Typography variant="h6" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
-                    Global eSIM iPhone утсанд суулгах заавар
-                  </Typography>
-                  <Button
-                    variant="text"
-                    onClick={() => setShowVideo(!showVideo)}
-                    startIcon={<PlayCircleOutlined />}
-                    sx={{ 
-                      color: theme.palette.primary.main,
-                      '&:hover': { 
-                        bgcolor: alpha(theme.palette.primary.main, 0.1)
-                      } 
+                {/* Phone Selection Tabs */}
+                <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+                  <Tabs 
+                    value={selectedPhone} 
+                    onChange={(e, newValue) => setSelectedPhone(newValue)}
+                    variant="fullWidth"
+                    sx={{
+                      '& .MuiTabs-indicator': {
+                        height: 3,
+                        borderRadius: 3
+                      }
                     }}
                   >
-                    {showVideo ? "Хаах" : "Видео үзэх"}
-                  </Button>
-                </Stack>
+                    <Tab 
+                      label="Huawei" 
+                      value="huawei"
+                      sx={{
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        fontSize: '1rem'
+                      }}
+                    />
+                    <Tab 
+                      label="Redmi" 
+                      value="redmi"
+                      sx={{
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        fontSize: '1rem'
+                      }}
+                    />
+                  </Tabs>
+                </Box>
 
                 {/* Image Carousel */}
                 <Box sx={{ mt: 3, mb: 4, position: 'relative' }}>
@@ -762,59 +789,35 @@ const DataPage = () => {
                   />
                 </Box>
 
-                {/* Video Section */}
-                {showVideo && (
-                  <Box sx={{ 
-                    position: 'relative',
-                    overflow: 'hidden',
-                    borderRadius: 2,
-                    pt: '56.25%',
-                    mb: 3
-                  }}>
-                    <iframe
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%'
-                      }}
-                      src="https://www.youtube.com/embed/NeQuWxxXDMg"
-                      title="eSIM Installation Guide"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </Box>
-                )}
-
                 {/* Instructions */}
                 <Stack spacing={3}>
-                  <Box>
-                    <Typography variant="subtitle1" sx={{ color: theme.palette.primary.main, fontWeight: 600, mb: 1 }}>
-                      1. eSIM-ийг QR кодоор идэвхжүүлэх
-                    </Typography>
-                    <List sx={{ pl: 2 }}>
-                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• iPhone утасныхаа Settings (Тохиргоо) цэс рүү орно</ListItem>
-                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Cellular (Гар утасны сүлжээ) эсвэл Mobile Data цэсийг сонгоно</ListItem>
-                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Add eSIM (eSIM нэмэх) гэсэн сонголтыг дарна</ListItem>
-                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Use QR Code сонголтыг дарж, QR кодыг камер ашиглан уншуулна</ListItem>
-                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Add Cellular Plan хэсгийг дарж, eSIM-ээ суулгана</ListItem>
-                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Done (Дуусгах) товчийг дарж тохиргоогоо хадгална</ListItem>
-                    </List>
-                  </Box>
-
-                  <Box>
-                    <Typography variant="subtitle1" sx={{ color: theme.palette.primary.main, fontWeight: 600, mb: 1 }}>
-                      2. eSIM-ээ идэвхжүүлж ашиглах
-                    </Typography>
-                    <List sx={{ pl: 2 }}>
-                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Settings - Cellular хэсэгт орж, eSIM идэвхтэй эсэхийг шалгана</ListItem>
-                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Хэрэв 2 SIM ашиглаж байгаа бол Primary/Secondary тохиргоог хийнэ</ListItem>
-                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Cellular - [eSIM нэр] - Data Roaming-ийг асаах</ListItem>
-                      <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Cellular Data дата ашиглах Global SIM-ээ сонгоно</ListItem>
-                    </List>
-                  </Box>
+                  {selectedPhone === 'huawei' ? (
+                    <Box>
+                      <Typography variant="subtitle1" sx={{ color: theme.palette.primary.main, fontWeight: 600, mb: 1 }}>
+                        Huawei утасны тохиргоо
+                      </Typography>
+                      <List sx={{ pl: 2 }}>
+                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Settings (Тохиргоо) цэс рүү орно</ListItem>
+                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Wireless & networks (Утасгүй сүлжээ) сонгоно</ListItem>
+                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Mobile network (Гар утасны сүлжээ) сонгоно</ListItem>
+                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Roaming (Роуминг) асаана</ListItem>
+                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• OK товчийг дарж дуусгана</ListItem>
+                      </List>
+                    </Box>
+                  ) : (
+                    <Box>
+                      <Typography variant="subtitle1" sx={{ color: theme.palette.primary.main, fontWeight: 600, mb: 1 }}>
+                        Redmi утасны тохиргоо
+                      </Typography>
+                      <List sx={{ pl: 2 }}>
+                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Settings (Тохиргоо) цэс рүү орно</ListItem>
+                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• SIM cards & mobile networks (SIM карт & гар утасны сүлжээ) сонгоно</ListItem>
+                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Advanced settings (Нэмэлт тохиргоо) сонгоно</ListItem>
+                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Data roaming (Дата роуминг) сонгоно</ListItem>
+                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Always (Үргэлж) болгож солино</ListItem>
+                      </List>
+                    </Box>
+                  )}
                 </Stack>
               </Paper>
             </Box>

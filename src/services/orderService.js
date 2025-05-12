@@ -1,27 +1,9 @@
 import axios from 'axios';
 import { addDays } from 'date-fns';
+import { getUser } from './authService';
 
 // API URL from environment variable
-const API_URL ='https://esimbackend-78d0b12a97f7.herokuapp.com';
-
-// Configure axios with timeout and auth token
-const api = axios.create({
-  baseURL: API_URL,
-  timeout: 30000, // 30 seconds timeout
-  headers: {
-    'Cookie': 'pareto=BwXFNxZgVyRHs4YcVucWJMdlarWa4rZbyIdDzw0SF2c3jUlmYdWOaLUs2dDY'
-  }
-});
-
-const options = {
-  method: 'GET',
-  url: 'https://esimbackend-78d0b12a97f7.herokuapp.com/api/user/page/get-order-list-air-market-gift',
-  params: {createdBy: 'AIR_MARKET_GIFT'},
-  headers: {
-    'User-Agent': 'insomnia/11.1.0'
-  },
-  withCredentials: true
-};
+const API_URL = 'https://esimbackend-78d0b12a97f7.herokuapp.com';
 
 // Transform API response to match our application's data structure
 const transformOrderData = (apiOrder) => {
@@ -49,12 +31,19 @@ const transformOrderData = (apiOrder) => {
 
 export const getOrders = async () => {
   try {
-    const response = await fetch('https://esimbackend-78d0b12a97f7.herokuapp.com/api/user/page/get-order-list-air-market-gift?createdBy=AIR_MARKET_GIFT', {
+    const userData = getUser();
+    if (!userData?.pareto) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await fetch(`${API_URL}/api/user/page/get-order-list-air-market-gift?createdBy=AIR_MARKET_GIFT`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+        'Authorization': userData.pareto
+      },
+      mode: 'cors'
     });
 
     if (!response.ok) {
@@ -80,11 +69,30 @@ export const getOrders = async () => {
 
 export const activateSIM = async (last6Digits) => {
   try {
-    const response = await api.post('/api/user/activate-sim', {
-      last6Digits
+    const userData = getUser();
+    if (!userData?.pareto) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await fetch(`${API_URL}/api/user/activate-sim`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': userData.pareto
+      },
+      body: JSON.stringify({ last6Digits }),
+      mode: 'cors'
     });
-    return transformOrderData(response.data);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return transformOrderData(data);
   } catch (error) {
+    console.error('Error activating SIM:', error);
     throw new Error('Failed to activate SIM');
   }
 };
@@ -130,8 +138,8 @@ export const createOrder = async (orderData) => {
 
 export const bulkImportSims = async (simCards) => {
   try {
-    const response = await api.post('/api/user/bulk-import-sims', { simCards });
-    return response.data.map(transformOrderData);
+    // const response = await api.post('/api/user/bulk-import-sims', { simCards });
+    // return response.data.map(transformOrderData);
   } catch (error) {
     console.error('Error importing SIM cards:', error);
     throw new Error('Failed to import SIM cards');
@@ -140,8 +148,8 @@ export const bulkImportSims = async (simCards) => {
 
 export const getOrderById = async (orderId) => {
   try {
-    const response = await api.get(`/api/user/order/${orderId}`);
-    return transformOrderData(response.data);
+    // const response = await api.get(`/api/user/order/${orderId}`);
+    // return transformOrderData(response.data);
   } catch (error) {
     console.error('Error fetching order:', error);
     throw new Error('Failed to fetch order');

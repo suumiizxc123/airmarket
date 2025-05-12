@@ -30,7 +30,14 @@ import {
 const DEFAULT_VALUES = {
   country: 'South Korea',
   soldPrice: 10000,
-  createdBy: 'Bayarkhuu',
+  createdBy: (() => {
+    try {
+      const user = localStorage.getItem('user');
+      return user ? JSON.parse(user).email : 'Guest';
+    } catch (error) {
+      return 'Guest';
+    }
+  })(),
   orderType: 'gift',
   dataGB: 3,
   duration: 7 // days

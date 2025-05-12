@@ -2,7 +2,7 @@ import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import Login from './pages/Login';
+import LoginPage from './pages/LoginPage';
 import ActivateSIM from './components/ActivateSIM';
 import Orders from './pages/Orders';
 import DataUsage from './pages/DataUsage';
@@ -62,7 +62,7 @@ function App() {
         <Routes>
           {/* Redirect root to orders */}
           <Route path="/" element={<Navigate to="/orders" replace />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/data/:orderId" element={<DataPage />} />
           <Route
             path="/activate"
