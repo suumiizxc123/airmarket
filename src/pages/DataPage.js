@@ -39,11 +39,15 @@ import {
 } from '@mui/icons-material';
 
 // Import images
-import iphone_manual_1_2 from '../images/iphone_manual_1_2.jpg';
-import iphone_manual_3_4 from '../images/iphone_manual_3_4.jpg';
-import iphone_manual_5_6 from '../images/iphone_manual_5_6.jpg';
+// import iphone_manual_1_2 from '../images/iphone_manual_1_2.jpg';
+// import iphone_manual_3_4 from '../images/iphone_manual_3_4.jpg';
+// import iphone_manual_5_6 from '../images/iphone_manual_5_6.jpg';
 import guide1 from '../images/guide1.jpeg';
 import guide2 from '../images/guide2.jpeg';
+import huawei_guide from '../images/huawei_guide.png';
+import iphone_guide from '../images/iphone_guide.png';
+import redmi_guide from '../images/redmi_guide.png';
+import samsung_guide from '../images/samsung_guide.png';
 
 const DataPage = () => {
   const { orderId } = useParams();
@@ -71,6 +75,56 @@ const DataPage = () => {
     "Huawei Phone Guide",
     "Redmi Phone Guide"
   ];
+
+  // Guide content data
+  const guideContent = {
+    'samsung-dual': {
+      title: 'Samsung 2 симтэй утасны тохиргоо',
+      image: samsung_guide,
+      steps: [
+        'Settings - Connection - SIM manager ороод доошоо гүйлгээд Mobile data хэсэгт (Global sim)-р тохируулах',
+        'Settings - Connection - Mobile Networks руу орж Data roaming асаах'
+      ]
+    },
+    'samsung-single': {
+      title: 'Samsung 1 симтэй утасны тохиргоо',
+      image: samsung_guide,
+      steps: [
+        'Settings - Connections - Data usage - Mobile data ON',
+        'Settings - Connections - Global roaming - Data roaming ON'
+      ]
+    },
+    'iphone': {
+      title: 'iPhone утасны тохиргоо',
+      image: iphone_guide,
+      steps: [
+        'Settings - Cellular - Cellular Data Options - Data roaming ON',
+        'Settings - Cellular - Cellular Data ON'
+      ]
+    },
+    'huawei': {
+      title: 'Huawei утасны тохиргоо',
+      image: huawei_guide,
+      steps: [
+        'Settings (Тохиргоо) цэс рүү орно',
+        'Wireless & networks (Утасгүй сүлжээ) сонгоно',
+        'Mobile network (Гар утасны сүлжээ) сонгоно',
+        'Roaming (Роуминг) асаана',
+        'OK товчийг дарж дуусгана'
+      ]
+    },
+    'redmi': {
+      title: 'Redmi утасны тохиргоо',
+      image: redmi_guide,
+      steps: [
+        'Settings (Тохиргоо) цэс рүү орно',
+        'SIM cards & mobile networks (SIM карт & гар утасны сүлжээ) сонгоно',
+        'Advanced settings (Нэмэлт тохиргоо) сонгоно',
+        'Data roaming (Дата роуминг) сонгоно',
+        'Always (Үргэлж) болгож солино'
+      ]
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -635,7 +689,7 @@ const DataPage = () => {
                 <QrCodeIcon color="primary" sx={{ fontSize: 28 }} />
               </Box>
               <Typography variant="h5" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
-                Утасны тохиргоо
+                Биет сим идэвхжүүлэх заавар
               </Typography>
             </Stack>
             <Divider sx={{ mb: 3 }} />
@@ -654,7 +708,8 @@ const DataPage = () => {
                   <Tabs 
                     value={selectedPhone} 
                     onChange={(e, newValue) => setSelectedPhone(newValue)}
-                    variant="fullWidth"
+                    variant="scrollable"
+                    scrollButtons="auto"
                     sx={{
                       '& .MuiTabs-indicator': {
                         height: 3,
@@ -662,6 +717,33 @@ const DataPage = () => {
                       }
                     }}
                   >
+                    <Tab 
+                      label="Samsung 2 симтэй" 
+                      value="samsung-dual"
+                      sx={{
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        fontSize: '1rem'
+                      }}
+                    />
+                    <Tab 
+                      label="Samsung 1 симтэй" 
+                      value="samsung-single"
+                      sx={{
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        fontSize: '1rem'
+                      }}
+                    />
+                    <Tab 
+                      label="iPhone" 
+                      value="iphone"
+                      sx={{
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        fontSize: '1rem'
+                      }}
+                    />
                     <Tab 
                       label="Huawei" 
                       value="huawei"
@@ -683,142 +765,92 @@ const DataPage = () => {
                   </Tabs>
                 </Box>
 
-                {/* Image Carousel */}
-                <Box sx={{ mt: 3, mb: 4, position: 'relative' }}>
-                  <Box sx={{ position: 'relative', width: '100%', height: 300 }}>
-                    {images.map((img, index) => (
+                {/* Content Grid */}
+                <Grid container spacing={3}>
+                  {/* Image */}
+                  <Grid item xs={12} md={6}>
+                    <Box sx={{ 
+                      position: 'relative', 
+                      width: '100%', 
+                      height: 300,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
                       <Box
-                        key={index}
+                        component="img"
+                        src={guideContent[selectedPhone].image}
+                        alt={guideContent[selectedPhone].title}
+                        sx={{
+                          maxWidth: '100%',
+                          maxHeight: '100%',
+                          objectFit: 'contain',
+                          borderRadius: 2,
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => handleZoomImage(0)}
+                      />
+                      <IconButton
+                        onClick={() => handleZoomImage(0)}
                         sx={{
                           position: 'absolute',
-                          width: '100%',
-                          height: '100%',
-                          opacity: currentSlide === index ? 1 : 0,
-                          transition: 'opacity 0.5s ease-in-out',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
+                          bottom: 8,
+                          right: 8,
+                          bgcolor: alpha(theme.palette.primary.main, 0.8),
+                          color: 'white',
+                          '&:hover': { 
+                            bgcolor: theme.palette.primary.main 
+                          }
                         }}
                       >
-                        <Box
-                          component="img"
-                          src={img}
-                          alt={imageAlts[index]}
-                          sx={{
-                            maxWidth: '100%',
-                            maxHeight: '100%',
-                            objectFit: 'contain',
-                            borderRadius: 2,
-                            cursor: 'pointer'
-                          }}
-                          onClick={() => handleZoomImage(index)}
-                        />
-                        <IconButton
-                          onClick={() => handleZoomImage(index)}
-                          sx={{
-                            position: 'absolute',
-                            bottom: 8,
-                            right: 8,
-                            bgcolor: alpha(theme.palette.primary.main, 0.8),
-                            color: 'white',
-                            '&:hover': { 
-                              bgcolor: theme.palette.primary.main 
-                            }
-                          }}
-                        >
-                          <ZoomInIcon />
-                        </IconButton>
-                      </Box>
-                    ))}
-                  </Box>
+                        <ZoomInIcon />
+                      </IconButton>
+                    </Box>
+                  </Grid>
 
-                  {/* Navigation Buttons */}
-                  <IconButton
-                    onClick={() => setCurrentSlide((prev) => (prev > 0 ? prev - 1 : images.length - 1))}
-                    sx={{
-                      position: 'absolute',
-                      left: 8,
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      bgcolor: alpha(theme.palette.primary.main, 0.8),
-                      color: 'white',
-                      '&:hover': { 
-                        bgcolor: theme.palette.primary.main 
-                      }
-                    }}
-                  >
-                    <ArrowBackIos />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => setCurrentSlide((prev) => (prev < images.length - 1 ? prev + 1 : 0))}
-                    sx={{
-                      position: 'absolute',
-                      right: 8,
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      bgcolor: alpha(theme.palette.primary.main, 0.8),
-                      color: 'white',
-                      '&:hover': { 
-                        bgcolor: theme.palette.primary.main 
-                      }
-                    }}
-                  >
-                    <ArrowForwardIos />
-                  </IconButton>
-
-                  {/* Dots */}
-                  <MobileStepper
-                    steps={images.length}
-                    position="static"
-                    activeStep={currentSlide}
-                    sx={{
-                      position: 'absolute',
-                      bottom: 8,
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      bgcolor: 'transparent',
-                      '& .MuiMobileStepper-dot': {
-                        bgcolor: alpha(theme.palette.primary.main, 0.3),
-                        '&.MuiMobileStepper-dotActive': {
-                          bgcolor: theme.palette.primary.main
-                        }
-                      }
-                    }}
-                    backButton={null}
-                    nextButton={null}
-                  />
-                </Box>
-
-                {/* Instructions */}
-                <Stack spacing={3}>
-                  {selectedPhone === 'huawei' ? (
+                  {/* Instructions */}
+                  <Grid item xs={12} md={6}>
                     <Box>
-                      <Typography variant="subtitle1" sx={{ color: theme.palette.primary.main, fontWeight: 600, mb: 1 }}>
-                        Huawei утасны тохиргоо
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          color: theme.palette.primary.main, 
+                          fontWeight: 600, 
+                          mb: 2 
+                        }}
+                      >
+                        {guideContent[selectedPhone].title}
                       </Typography>
                       <List sx={{ pl: 2 }}>
-                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Settings (Тохиргоо) цэс рүү орно</ListItem>
-                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Wireless & networks (Утасгүй сүлжээ) сонгоно</ListItem>
-                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Mobile network (Гар утасны сүлжээ) сонгоно</ListItem>
-                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Roaming (Роуминг) асаана</ListItem>
-                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• OK товчийг дарж дуусгана</ListItem>
+                        {guideContent[selectedPhone].steps.map((step, index) => (
+                          <ListItem 
+                            key={index} 
+                            sx={{ 
+                              py: 0.5, 
+                              color: 'text.primary',
+                              display: 'flex',
+                              alignItems: 'flex-start'
+                            }}
+                          >
+                            <Typography 
+                              component="span" 
+                              sx={{ 
+                                mr: 1,
+                                color: theme.palette.primary.main,
+                                fontWeight: 500
+                              }}
+                            >
+                              {index + 1}.
+                            </Typography>
+                            <Typography component="span">
+                              {step}
+                            </Typography>
+                          </ListItem>
+                        ))}
                       </List>
                     </Box>
-                  ) : (
-                    <Box>
-                      <Typography variant="subtitle1" sx={{ color: theme.palette.primary.main, fontWeight: 600, mb: 1 }}>
-                        Redmi утасны тохиргоо
-                      </Typography>
-                      <List sx={{ pl: 2 }}>
-                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Settings (Тохиргоо) цэс рүү орно</ListItem>
-                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• SIM cards & mobile networks (SIM карт & гар утасны сүлжээ) сонгоно</ListItem>
-                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Advanced settings (Нэмэлт тохиргоо) сонгоно</ListItem>
-                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Data roaming (Дата роуминг) сонгоно</ListItem>
-                        <ListItem sx={{ py: 0.5, color: 'text.primary' }}>• Always (Үргэлж) болгож солино</ListItem>
-                      </List>
-                    </Box>
-                  )}
-                </Stack>
+                  </Grid>
+                </Grid>
               </Paper>
             </Box>
           </Paper>
