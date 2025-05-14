@@ -48,6 +48,7 @@ import huawei_guide from '../images/huawei_guide.png';
 import iphone_guide from '../images/iphone_guide.png';
 import redmi_guide from '../images/redmi_guide.png';
 import samsung_guide from '../images/samsung_guide.png';
+import logo512 from '../images/logo512.png';
 
 const DataPage = () => {
   const { orderId } = useParams();
@@ -349,145 +350,146 @@ const DataPage = () => {
       py: 4
     }}>
       <Box sx={{ maxWidth: '1200px', mx: 'auto', px: 2 }}>
-        <Typography 
-          variant="h3" 
-          gutterBottom 
-          sx={{ 
-            color: theme.palette.primary.main,
-            fontWeight: 700,
-            textAlign: 'center',
-            mb: 4,
-            textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
-            letterSpacing: '-0.5px'
-          }}
-        >
-          СИМ Картын мэдээлэл
-        </Typography>
+        {/* Main Title with Logo */}
+        <Stack direction="row" spacing={2} alignItems="center" justifyContent="center" mb={3}>
+          <Box
+            component="img"
+            src={logo512}
+            alt="GlobalSIM Logo"
+            sx={{
+              width: 32,
+              height: 32,
+              objectFit: 'contain'
+            }}
+          />
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              color: theme.palette.primary.main,
+              fontWeight: 500,
+              textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+              letterSpacing: '-0.5px',
+              fontSize: { xs: '1.25rem', sm: '1.375rem', md: '1.5rem' }
+            }}
+          >
+            GlobalSIM картын мэдээлэл
+          </Typography>
+        </Stack>
 
         <Stack spacing={4}>
           {/* Basic Information */}
           <Paper 
             elevation={0}
             sx={{ 
-              p: 4,
-              borderRadius: 4,
+              p: 3,
+              borderRadius: 3,
               background: 'white',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
               border: '1px solid',
-              borderColor: alpha(theme.palette.primary.main, 0.1)
+              borderColor: alpha(theme.palette.primary.main, 0.08)
             }}
           >
-            <Stack direction="row" spacing={2} alignItems="center" mb={3}>
+            <Stack direction="row" spacing={2} alignItems="center" mb={2}>
               <Box sx={{ 
-                p: 1.5, 
-                borderRadius: 2, 
-                bgcolor: alpha(theme.palette.primary.main, 0.1) 
+                p: 1, 
+                borderRadius: 1.5, 
+                bgcolor: alpha(theme.palette.primary.main, 0.08) 
               }}>
-                <SimCardIcon color="primary" sx={{ fontSize: 28 }} />
+                <SimCardIcon color="primary" sx={{ fontSize: 20 }} />
               </Box>
-              <Typography variant="h5" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
-                Үндсэн мэдээлэл
+              <Typography variant="subtitle2" sx={{ color: theme.palette.primary.main, fontWeight: 500 }}>
+                Сим картын мэдээлэл
               </Typography>
             </Stack>
-            <Divider sx={{ mb: 3 }} />
-            <Grid container spacing={3}>
+            <Divider sx={{ mb: 2 }} />
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <Stack direction="row" spacing={2} alignItems="center">
-                  <Box sx={{ 
-                    p: 1, 
-                    borderRadius: 2, 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1) 
-                  }}>
-                    <SimCardIcon color="primary" fontSize="small" />
-                  </Box>
-                  <Box>
-                    <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }}>
-                      ICCID
-                    </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                      {data.iccid}
-                    </Typography>
-                  </Box>
-                </Stack>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Stack direction="row" spacing={2} alignItems="center">
-                  <Box sx={{ 
-                    p: 1, 
-                    borderRadius: 2, 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1) 
-                  }}>
-                    <PublicIcon color="primary" fontSize="small" />
-                  </Box>
-                  <Box>
-                    <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }}>
-                      Улс
-                    </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                      {country}
-                    </Typography>
-                  </Box>
-                </Stack>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Stack direction="row" spacing={2} alignItems="center">
-                  <Box sx={{ 
-                    p: 1, 
-                    borderRadius: 2, 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1) 
-                  }}>
-                    <CalendarIcon color="primary" fontSize="small" />
-                  </Box>
-                  <Box>
-                    <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }}>
-                      Аялах өдөр
-                    </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                      {data.travelday}
-                    </Typography>
-                  </Box>
-                </Stack>
-              </Grid>
-            </Grid>
-          </Paper>
+                <Stack spacing={2}>
+                  <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Box sx={{ 
+                      p: 0.75, 
+                      borderRadius: 1.5, 
+                      bgcolor: alpha(theme.palette.primary.main, 0.08) 
+                    }}>
+                      <SimCardIcon color="primary" sx={{ fontSize: 16 }} />
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>
+                        ICCID
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {data.iccid}
+                      </Typography>
+                    </Box>
+                  </Stack>
 
-          {/* Data Usage */}
-          <Paper 
-            elevation={0}
-            sx={{ 
-              p: 4,
-              borderRadius: 4,
-              background: 'white',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-              border: '1px solid',
-              borderColor: alpha(theme.palette.primary.main, 0.1)
-            }}
-          >
-            <Stack direction="row" spacing={2} alignItems="center" mb={3}>
-              <Box sx={{ 
-                p: 1.5, 
-                borderRadius: 2, 
-                bgcolor: alpha(theme.palette.primary.main, 0.1) 
-              }}>
-                <DataUsageIcon color="primary" sx={{ fontSize: 28 }} />
-              </Box>
-              <Typography variant="h5" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
-                Дата ашиглалт
-              </Typography>
-            </Stack>
-            <Divider sx={{ mb: 3 }} />
-            <Stack spacing={2}>
-              <Box>
-                <Stack direction="row" alignItems="center" spacing={3}>
-                  <Box sx={{ width: '100%', maxWidth: 300 }}>
+                  <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Box sx={{ 
+                      p: 0.75, 
+                      borderRadius: 1.5, 
+                      bgcolor: alpha(theme.palette.primary.main, 0.08) 
+                    }}>
+                      <PublicIcon color="primary" sx={{ fontSize: 16 }} />
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>
+                        Улс
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {country}
+                      </Typography>
+                    </Box>
+                  </Stack>
+
+                  <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Box sx={{ 
+                      p: 0.75, 
+                      borderRadius: 1.5, 
+                      bgcolor: alpha(theme.palette.primary.main, 0.08) 
+                    }}>
+                      <CalendarIcon color="primary" sx={{ fontSize: 16 }} />
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>
+                        Аялах өдөр
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {data.travelday}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Stack>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Stack spacing={2}>
+                  <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Box sx={{ 
+                      p: 0.75, 
+                      borderRadius: 1.5, 
+                      bgcolor: alpha(theme.palette.primary.main, 0.08) 
+                    }}>
+                      <DataUsageIcon color="primary" sx={{ fontSize: 16 }} />
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>
+                        Дата ашиглалт
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {data.usedgb}GB / {data.allgb}GB
+                      </Typography>
+                    </Box>
+                  </Stack>
+
+                  <Box sx={{ width: '100%', maxWidth: 280 }}>
                     <Box
                       sx={{
-                        height: 16,
-                        backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                        borderRadius: 8,
+                        height: 8,
+                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                        borderRadius: 4,
                         overflow: 'hidden',
-                        mb: 1,
-                        boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
+                        mb: 0.5,
+                        boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.05)'
                       }}
                     >
                       <Box
@@ -499,54 +501,51 @@ const DataPage = () => {
                         }}
                       />
                     </Box>
+                    <Typography variant="caption" color="text.secondary">
+                      {((data.usedgb / data.allgb) * 100).toFixed(1)}% ашиглагдсан
+                    </Typography>
                   </Box>
-                  <Typography variant="h5" sx={{ fontWeight: 600, minWidth: 120 }}>
-                    {data.usedgb}GB / {data.allgb}GB
-                  </Typography>
                 </Stack>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1, ml: 1 }}>
-                  {((data.usedgb / data.allgb) * 100).toFixed(1)}% ашиглагдсан
-                </Typography>
-              </Box>
-            </Stack>
+              </Grid>
+            </Grid>
           </Paper>
 
           {/* Available Plans */}
           <Paper 
             elevation={0}
             sx={{ 
-              p: 4,
-              borderRadius: 4,
+              p: 3,
+              borderRadius: 3,
               background: 'white',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
               border: '1px solid',
-              borderColor: alpha(theme.palette.primary.main, 0.1)
+              borderColor: alpha(theme.palette.primary.main, 0.08)
             }}
           >
-            <Stack direction="row" spacing={2} alignItems="center" mb={3}>
+            <Stack direction="row" spacing={2} alignItems="center" mb={2}>
               <Box sx={{ 
-                p: 1.5, 
-                borderRadius: 2, 
-                bgcolor: alpha(theme.palette.primary.main, 0.1) 
+                p: 1, 
+                borderRadius: 1.5, 
+                bgcolor: alpha(theme.palette.primary.main, 0.08) 
               }}>
-                <ShoppingCartIcon color="primary" sx={{ fontSize: 28 }} />
+                <ShoppingCartIcon color="primary" sx={{ fontSize: 20 }} />
               </Box>
-              <Typography variant="h5" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
+              <Typography variant="subtitle2" sx={{ color: theme.palette.primary.main, fontWeight: 500 }}>
                 Дата багцууд
               </Typography>
             </Stack>
-            <Divider sx={{ mb: 3 }} />
+            <Divider sx={{ mb: 2 }} />
             
             {/* Duration Tabs */}
             <Box sx={{ 
               borderBottom: 1, 
               borderColor: 'divider', 
-              mb: 4,
+              mb: 3,
               '& .MuiTab-root': {
                 textTransform: 'none',
                 fontWeight: 500,
                 minWidth: 120,
-                fontSize: '1rem'
+                fontSize: '0.875rem'
               }
             }}>
               <Tabs 
@@ -572,13 +571,13 @@ const DataPage = () => {
             </Box>
 
             {/* Plans Grid */}
-            <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }}>
+            <Grid container spacing={{ xs: 1, sm: 1.5, md: 2 }}>
               {currentPlans.map((plan) => (
-                <Grid item xs={6} sm={6} md={4} key={plan.rowid}>
+                <Grid item xs={12} sm={6} md={4} key={plan.rowid}>
                   <Paper 
                     elevation={0}
                     sx={{ 
-                      p: { xs: 1.5, sm: 2, md: 3 },
+                      p: { xs: 1, sm: 1.5, md: 2 },
                       height: '100%',
                       border: '1px solid',
                       borderColor: alpha(theme.palette.primary.main, 0.1),
@@ -587,42 +586,57 @@ const DataPage = () => {
                       display: 'flex',
                       flexDirection: 'column',
                       '&:hover': {
-                        transform: 'translateY(-4px)',
+                        transform: 'translateY(-2px)',
                         borderColor: theme.palette.primary.main,
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)'
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
                       }
                     }}
                   >
-                    <Stack spacing={{ xs: 1, sm: 1.5, md: 2 }} sx={{ flex: 1 }}>
-                      <Typography 
-                        variant="h4" 
-                        color="primary" 
-                        sx={{ 
-                          fontWeight: 700,
-                          fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' }
-                        }}
-                      >
-                        {formatPrice(plan.price)}
-                      </Typography>
-                      <Typography 
-                        variant="h5" 
-                        fontWeight="bold" 
-                        sx={{ 
-                          color: theme.palette.primary.main,
-                          fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' }
-                        }}
-                      >
-                        {plan.datagb}GB
-                      </Typography>
-                      <Typography 
-                        variant="body1" 
-                        color="text.secondary"
-                        sx={{ 
-                          fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' }
-                        }}
-                      >
-                        {plan.duration.replace('days', '')}
-                      </Typography>
+                    <Stack spacing={{ xs: 0.75, sm: 1, md: 1.5 }} sx={{ flex: 1 }}>
+                      <Stack direction="row" alignItems="baseline" spacing={0.5}>
+                        <Typography 
+                          variant="h6" 
+                          color="primary" 
+                          sx={{ 
+                            fontWeight: 600,
+                            fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.375rem' }
+                          }}
+                        >
+                          {formatPrice(plan.price)}
+                        </Typography>
+                        <Typography 
+                          variant="body2" 
+                          color="text.secondary"
+                          sx={{ 
+                            fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                          }}
+                        >
+                          / {plan.duration.replace('days', '')}
+                        </Typography>
+                      </Stack>
+
+                      <Stack direction="row" alignItems="center" spacing={0.5}>
+                        <Typography 
+                          variant="subtitle1" 
+                          fontWeight="bold" 
+                          sx={{ 
+                            color: theme.palette.primary.main,
+                            fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' }
+                          }}
+                        >
+                          {plan.datagb}
+                        </Typography>
+                        <Typography 
+                          variant="body2" 
+                          color="text.secondary"
+                          sx={{ 
+                            fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                          }}
+                        >
+                          GB
+                        </Typography>
+                      </Stack>
+
                       <Chip 
                         label={plan.countryname}
                         size="small"
@@ -631,28 +645,29 @@ const DataPage = () => {
                           bgcolor: alpha(theme.palette.primary.main, 0.1),
                           color: theme.palette.primary.main,
                           fontWeight: 500,
-                          fontSize: { xs: '0.625rem', sm: '0.75rem', md: '0.875rem' },
-                          height: { xs: 20, sm: 24, md: 28 },
+                          fontSize: { xs: '0.625rem', sm: '0.75rem' },
+                          height: { xs: 20, sm: 24 },
                           '&:hover': {
                             bgcolor: alpha(theme.palette.primary.main, 0.2),
                           }
                         }}
                       />
+
                       <Button
                         variant="contained"
                         fullWidth
                         onClick={() => handleCreateOrder(plan)}
                         disabled={creatingOrder}
-                        startIcon={<ShoppingCartIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' } }} />}
+                        startIcon={<ShoppingCartIcon sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }} />}
                         sx={{
                           mt: 'auto',
-                          py: { xs: 0.75, sm: 1, md: 1.5 },
-                          px: { xs: 1, sm: 1.5, md: 2 },
+                          py: { xs: 0.5, sm: 0.75 },
+                          px: { xs: 1, sm: 1.5 },
                           borderRadius: 2,
                           textTransform: 'none',
-                          fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' },
+                          fontSize: { xs: '0.75rem', sm: '0.875rem' },
                           fontWeight: 600,
-                          minHeight: { xs: 32, sm: 36, md: 40 },
+                          minHeight: { xs: 32, sm: 36 },
                           background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                           '&:hover': {
                             background: `linear-gradient(90deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
@@ -672,27 +687,27 @@ const DataPage = () => {
           <Paper 
             elevation={0}
             sx={{ 
-              p: 4,
-              borderRadius: 4,
+              p: 3,
+              borderRadius: 3,
               background: 'white',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
               border: '1px solid',
-              borderColor: alpha(theme.palette.primary.main, 0.1)
+              borderColor: alpha(theme.palette.primary.main, 0.08)
             }}
           >
-            <Stack direction="row" spacing={2} alignItems="center" mb={3}>
+            <Stack direction="row" spacing={2} alignItems="center" mb={2}>
               <Box sx={{ 
-                p: 1.5, 
-                borderRadius: 2, 
-                bgcolor: alpha(theme.palette.primary.main, 0.1) 
+                p: 1, 
+                borderRadius: 1.5, 
+                bgcolor: alpha(theme.palette.primary.main, 0.08) 
               }}>
-                <QrCodeIcon color="primary" sx={{ fontSize: 28 }} />
+                <QrCodeIcon color="primary" sx={{ fontSize: 20 }} />
               </Box>
-              <Typography variant="h5" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
+              <Typography variant="subtitle2" sx={{ color: theme.palette.primary.main, fontWeight: 500 }}>
                 Биет сим идэвхжүүлэх заавар
               </Typography>
             </Stack>
-            <Divider sx={{ mb: 3 }} />
+            <Divider sx={{ mb: 2 }} />
 
             <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
               <Paper 
@@ -704,7 +719,7 @@ const DataPage = () => {
                 }}
               >
                 {/* Phone Selection Tabs */}
-                <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
                   <Tabs 
                     value={selectedPhone} 
                     onChange={(e, newValue) => setSelectedPhone(newValue)}
@@ -714,65 +729,47 @@ const DataPage = () => {
                       '& .MuiTabs-indicator': {
                         height: 3,
                         borderRadius: 3
+                      },
+                      '& .MuiTab-root': {
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                        minWidth: { xs: 100, sm: 120 },
+                        px: { xs: 1, sm: 2 }
                       }
                     }}
                   >
                     <Tab 
                       label="Samsung 2 симтэй" 
                       value="samsung-dual"
-                      sx={{
-                        textTransform: 'none',
-                        fontWeight: 500,
-                        fontSize: '1rem'
-                      }}
                     />
                     <Tab 
                       label="Samsung 1 симтэй" 
                       value="samsung-single"
-                      sx={{
-                        textTransform: 'none',
-                        fontWeight: 500,
-                        fontSize: '1rem'
-                      }}
                     />
                     <Tab 
                       label="iPhone" 
                       value="iphone"
-                      sx={{
-                        textTransform: 'none',
-                        fontWeight: 500,
-                        fontSize: '1rem'
-                      }}
                     />
                     <Tab 
                       label="Huawei" 
                       value="huawei"
-                      sx={{
-                        textTransform: 'none',
-                        fontWeight: 500,
-                        fontSize: '1rem'
-                      }}
                     />
                     <Tab 
                       label="Redmi" 
                       value="redmi"
-                      sx={{
-                        textTransform: 'none',
-                        fontWeight: 500,
-                        fontSize: '1rem'
-                      }}
                     />
                   </Tabs>
                 </Box>
 
                 {/* Content Grid */}
-                <Grid container spacing={3}>
+                <Grid container spacing={2}>
                   {/* Image */}
                   <Grid item xs={12} md={6}>
                     <Box sx={{ 
                       position: 'relative', 
                       width: '100%', 
-                      height: 300,
+                      height: { xs: 250, sm: 300 },
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
@@ -816,12 +813,13 @@ const DataPage = () => {
                         sx={{ 
                           color: theme.palette.primary.main, 
                           fontWeight: 600, 
-                          mb: 2 
+                          mb: 1.5,
+                          fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' }
                         }}
                       >
                         {guideContent[selectedPhone].title}
                       </Typography>
-                      <List sx={{ pl: 2 }}>
+                      <List sx={{ pl: 1 }}>
                         {guideContent[selectedPhone].steps.map((step, index) => (
                           <ListItem 
                             key={index} 
@@ -837,12 +835,19 @@ const DataPage = () => {
                               sx={{ 
                                 mr: 1,
                                 color: theme.palette.primary.main,
-                                fontWeight: 500
+                                fontWeight: 500,
+                                fontSize: { xs: '0.875rem', sm: '1rem' }
                               }}
                             >
                               {index + 1}.
                             </Typography>
-                            <Typography component="span">
+                            <Typography 
+                              component="span"
+                              sx={{
+                                fontSize: { xs: '0.875rem', sm: '1rem' },
+                                lineHeight: 1.5
+                              }}
+                            >
                               {step}
                             </Typography>
                           </ListItem>
