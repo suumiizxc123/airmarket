@@ -44,10 +44,12 @@ import {
 // import iphone_manual_5_6 from '../images/iphone_manual_5_6.jpg';
 import guide1 from '../images/guide1.jpeg';
 import guide2 from '../images/guide2.jpeg';
-import huawei_guide from '../images/huawei_guide.png';
-import iphone_guide from '../images/iphone_guide.png';
-import redmi_guide from '../images/redmi_guide.png';
-import samsung_guide from '../images/samsung_guide.png';
+import huawei_guide from '../images/huawei_guide2.jpeg';
+import iphone_guide from '../images/iphone_guide2.jpeg';
+import redmi_guide from '../images/redmi_guide2.jpeg';
+import samsung_guide from '../images/samsung1_guide2.jpeg';
+
+import samsung_guide2 from '../images/samsung2_guide2.jpeg';
 import logo512 from '../images/logo512.png';
 
 const DataPage = () => {
@@ -81,7 +83,7 @@ const DataPage = () => {
   const guideContent = {
     'samsung-dual': {
       title: 'Samsung 2 симтэй утасны тохиргоо',
-      image: samsung_guide,
+      image: samsung_guide2,
       steps: [
         'Settings - Connection - SIM manager ороод доошоо гүйлгээд Mobile data хэсэгт (Global sim)-р тохируулах',
         'Settings - Connection - Mobile Networks руу орж Data roaming асаах'
