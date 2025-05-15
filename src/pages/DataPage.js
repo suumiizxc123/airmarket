@@ -400,30 +400,13 @@ const DataPage = () => {
                 <SimCardIcon color="primary" sx={{ fontSize: 20 }} />
               </Box>
               <Typography variant="subtitle2" sx={{ color: theme.palette.primary.main, fontWeight: 500 }}>
-                Сим картын мэдээлэл
+                Сим картын мэдээлэл - {data.iccid}
               </Typography>
             </Stack>
             <Divider sx={{ mb: 2 }} />
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <Stack spacing={2}>
-                  <Stack direction="row" spacing={1.5} alignItems="center">
-                    <Box sx={{ 
-                      p: 0.75, 
-                      borderRadius: 1.5, 
-                      bgcolor: alpha(theme.palette.primary.main, 0.08) 
-                    }}>
-                      <SimCardIcon color="primary" sx={{ fontSize: 16 }} />
-                    </Box>
-                    <Box>
-                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>
-                      SIM картын мэдээлэл / ICCID /
-                      </Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        {data.iccid}
-                      </Typography>
-                    </Box>
-                  </Stack>
 
                   <Stack direction="row" spacing={1.5} alignItems="center">
                     <Box sx={{ 
