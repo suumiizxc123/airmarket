@@ -381,8 +381,8 @@ const DataPage = () => {
           <Paper 
             elevation={0}
             sx={{ 
-              p: 3,
-              borderRadius: 3,
+              p: 2,
+              borderRadius: 2,
               background: 'white',
               boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
               border: '1px solid',
@@ -415,7 +415,7 @@ const DataPage = () => {
                     </Box>
                     <Box>
                       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>
-                        ICCID
+                      SIM картын мэдээлэл / ICCID /
                       </Typography>
                       <Typography variant="body2" sx={{ fontWeight: 500 }}>
                         {data.iccid}
@@ -514,8 +514,8 @@ const DataPage = () => {
           <Paper 
             elevation={0}
             sx={{ 
-              p: 3,
-              borderRadius: 3,
+              p: 2,
+              borderRadius: 2,
               background: 'white',
               boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
               border: '1px solid',
@@ -531,7 +531,7 @@ const DataPage = () => {
                 <ShoppingCartIcon color="primary" sx={{ fontSize: 20 }} />
               </Box>
               <Typography variant="subtitle2" sx={{ color: theme.palette.primary.main, fontWeight: 500 }}>
-                Дата багцууд
+                Дата багц сунгах
               </Typography>
             </Stack>
             <Divider sx={{ mb: 2 }} />
@@ -615,16 +615,36 @@ const DataPage = () => {
                         </Typography>
                       </Stack>
 
-                      <Stack direction="row" alignItems="center" spacing={0.5}>
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        <Stack direction="row" alignItems="center" spacing={0.5}>
+                          <Typography 
+                            variant="subtitle1" 
+                            fontWeight="bold" 
+                            sx={{ 
+                              color: theme.palette.primary.main,
+                              fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' }
+                            }}
+                          >
+                            {plan.datagb}
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            color="text.secondary"
+                            sx={{ 
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                            }}
+                          >
+                            GB
+                          </Typography>
+                        </Stack>
                         <Typography 
-                          variant="subtitle1" 
-                          fontWeight="bold" 
+                          variant="body2" 
+                          color="text.secondary"
                           sx={{ 
-                            color: theme.palette.primary.main,
-                            fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' }
+                            fontSize: { xs: '0.75rem', sm: '0.875rem' }
                           }}
                         >
-                          {plan.datagb}
+                          -
                         </Typography>
                         <Typography 
                           variant="body2" 
@@ -633,11 +653,11 @@ const DataPage = () => {
                             fontSize: { xs: '0.75rem', sm: '0.875rem' }
                           }}
                         >
-                          GB
+                          {plan.countryname}
                         </Typography>
                       </Stack>
 
-                      <Chip 
+                      {/* <Chip 
                         label={plan.countryname}
                         size="small"
                         sx={{ 
@@ -651,7 +671,7 @@ const DataPage = () => {
                             bgcolor: alpha(theme.palette.primary.main, 0.2),
                           }
                         }}
-                      />
+                      /> */}
 
                       <Button
                         variant="contained"

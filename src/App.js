@@ -9,6 +9,8 @@ import DataUsage from './pages/DataUsage';
 import Navigation from './components/Navigation';
 import { isAuthenticated } from './services/authService';
 import DataPage from './pages/DataPage';
+import Footer from './components/Footer';
+import './App.css';
 
 const theme = createTheme({
   palette: {
@@ -59,30 +61,35 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <Routes>
-          {/* Redirect root to orders */}
-          <Route path="/" element={<Navigate to="/orders" replace />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/data/:orderId" element={<DataPage />} />
-          <Route
-            path="/activate"
-            element={
-              <ProtectedRoute>
-                <ActivateSIM />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/orders"
-            element={
-              <ProtectedRoute>
-                <Orders />
-              </ProtectedRoute>
-            }
-          />
-          {/* Fallback route - redirect to orders */}
-          <Route path="*" element={<Navigate to="/orders" replace />} />
-        </Routes>
+        <div className="flex flex-col min-h-screen">
+          <main className="flex-grow">
+            <Routes>
+              {/* Redirect root to orders */}
+              <Route path="/" element={<Navigate to="/orders" replace />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/data/:orderId" element={<DataPage />} />
+              <Route
+                path="/activate"
+                element={
+                  <ProtectedRoute>
+                    <ActivateSIM />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/orders"
+                element={
+                  <ProtectedRoute>
+                    <Orders />
+                  </ProtectedRoute>
+                }
+              />
+              {/* Fallback route - redirect to orders */}
+              <Route path="*" element={<Navigate to="/orders" replace />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
       </Router>
     </ThemeProvider>
   );
