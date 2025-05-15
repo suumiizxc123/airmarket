@@ -59,10 +59,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://esimbackend-78d0b12a97f7.herokuapp.com",
-  "devDependencies": {
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.6"
-  }
+  "proxy": "https://esimbackend-78d0b12a97f7.herokuapp.com"
 }
