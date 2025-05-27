@@ -37,6 +37,7 @@ import {
   PlayCircleOutlined,
   ZoomIn as ZoomInIcon
 } from '@mui/icons-material';
+import { QRCodeSVG } from 'qrcode.react';
 
 // Import images
 // import iphone_manual_1_2 from '../images/iphone_manual_1_2.jpg';
@@ -66,6 +67,8 @@ const DataPage = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedPhone, setSelectedPhone] = useState('huawei');
+  const [paymentStatus, setPaymentStatus] = useState(null);
+  const [checkingPayment, setCheckingPayment] = useState(false);
   const theme = useTheme();
 
   // Image data for the carousel
@@ -261,22 +264,21 @@ const DataPage = () => {
     setSelectedDuration(newValue);
   };
 
-  const handleCreateOrder = async (plan) => {
+  const handleCreateOrder = async (plan, iccid) => {
     try {
       setCreatingOrder(true);
       setError(null);
       
-      const response = await fetch('https://clientsvc.globalsim.mn/api/user/page/create-order', {
+      const response = await fetch('https://clientsvc.globalsim.mn/api/user/page/create-qpos-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          simorderid: "",
+          simorderid: iccid,
           pricerowid: plan.rowid,
           prevordernum: orderId,
-          phonenumber: "00000000",
-          ispreorder: "false"
+          phonenumber: "00000000"
         })
       });
 
@@ -285,11 +287,40 @@ const DataPage = () => {
       const result = await response.json();
       setPaymentData(result);
       setPaymentDialog(true);
+      setPaymentStatus(null);
     } catch (err) {
       console.error('Error creating order:', err);
       setError('Failed to create order. Please try again.');
     } finally {
       setCreatingOrder(false);
+    }
+  };
+
+  const handleCheckPayment = async () => {
+    if (!paymentData?.qr_text) return;
+    
+    try {
+      setCheckingPayment(true);
+      const encodedQrText = encodeURIComponent(paymentData.qr_text);
+      const response = await fetch(`https://clientsvc.globalsim.mn/api/user/page/check-payment-qpos?qr_text=${encodedQrText}`);
+      
+      if (!response.ok) throw new Error('Failed to check payment status');
+      
+      const result = await response.json();
+      setPaymentStatus(result.message);
+      
+      if (result.message === 'success') {
+        // Close dialog and refresh page after successful payment
+        setTimeout(() => {
+          handleClosePaymentDialog();
+          window.location.reload();
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Error checking payment:', err);
+      setError('Failed to check payment status. Please try again.');
+    } finally {
+      setCheckingPayment(false);
     }
   };
 
@@ -661,7 +692,7 @@ const DataPage = () => {
                       <Button
                         variant="contained"
                         fullWidth
-                        onClick={() => handleCreateOrder(plan)}
+                        onClick={() => handleCreateOrder(plan, data.iccid)}
                         disabled={creatingOrder}
                         startIcon={<ShoppingCartIcon sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }} />}
                         sx={{
@@ -918,79 +949,115 @@ const DataPage = () => {
                     bgcolor: alpha(theme.palette.primary.main, 0.02)
                   }}
                 >
-                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: theme.palette.primary.main }}>
-                    QR кодоор төлөх
-                  </Typography>
-                  <Box
-                    component="img"
-                    src={`data:image/png;base64,${paymentData.qr_image}`}
-                    alt="Payment QR Code"
-                    sx={{ 
-                      maxWidth: 240,
-                      width: '100%',
-                      borderRadius: 2,
-                      boxShadow: '0 4px 16px rgba(0,0,0,0.1)'
-                    }}
-                  />
-                </Paper>
-              )}
-
-              <Paper 
-                elevation={0}
-                sx={{ 
-                  p: 3,
-                  textAlign: 'center',
-                  bgcolor: alpha(theme.palette.primary.main, 0.05),
-                  borderRadius: 3
-                }}
-              >
-                <Typography variant="h4" color="primary" sx={{ fontWeight: 700 }}>
-                  {formatPrice(paymentData.amount)}
-                </Typography>
-              </Paper>
-
-              {paymentData.urls?.map((url, index) => (
-                <Paper 
-                  key={index}
-                  elevation={0}
-                  sx={{ 
-                    p: 2,
-                    cursor: 'pointer',
-                    border: '1px solid',
-                    borderColor: alpha(theme.palette.primary.main, 0.1),
-                    borderRadius: 3,
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      bgcolor: alpha(theme.palette.primary.main, 0.05),
-                      borderColor: theme.palette.primary.main,
-                      transform: 'translateY(-2px)'
-                    }
-                  }}
-                  onClick={() => handleOpenQPayWallet(url.link)}
-                >
-                  <Stack direction="row" spacing={2} alignItems="center">
+                 
+                  
+                  {/* QR Code Section */}
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="subtitle1" sx={{ mb: 2, color: 'text.secondary' }}>
+                      QR кодоор төлөх
+                    </Typography>
                     <Box
-                      component="img"
-                      src={url.logo}
-                      alt={url.name}
                       sx={{ 
-                        width: 48, 
-                        height: 48, 
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        bgcolor: 'white',
+                        p: 2,
                         borderRadius: 2,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                        boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                        width: 240,
+                        height: 240,
+                        mx: 'auto'
                       }}
-                    />
-                    <Box>
-                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                        {url.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {url.description}
+                    >
+                      <QRCodeSVG
+                        value={paymentData.qr_text}
+                        size={200}
+                        level="H"
+                        includeMargin={true}
+                      />
+                    </Box>
+                  </Box>
+
+                  <Divider sx={{ my: 2 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      эсвэл
+                    </Typography>
+                  </Divider>
+
+                  {/* QPos Payment Section */}
+                  <Box>
+                    <Typography variant="subtitle1" sx={{ mb: 2, color: 'text.secondary' }}>
+                      QPos төлбөр төлөх
+                    </Typography>
+                    <Paper 
+                      elevation={0}
+                      sx={{ 
+                        p: 2,
+                        cursor: 'pointer',
+                        border: '1px solid',
+                        borderColor: alpha(theme.palette.primary.main, 0.1),
+                        borderRadius: 3,
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          bgcolor: alpha(theme.palette.primary.main, 0.05),
+                          borderColor: theme.palette.primary.main,
+                          transform: 'translateY(-2px)'
+                        }
+                      }}
+                      onClick={() => window.open(paymentData.qr_image, '_blank')}
+                    >
+                      <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
+                        <Box>
+                          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                            QPos
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            QPos төлбөрийн систем
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    </Paper>
+                  </Box>
+
+                  {/* Payment Status */}
+                  {paymentStatus && (
+                    <Box sx={{ mt: 3 }}>
+                      <Typography 
+                        variant="body1" 
+                        sx={{ 
+                          color: paymentStatus === 'success' ? 'success.main' : 
+                                 paymentStatus === 'PENDING' ? 'warning.main' : 'error.main',
+                          fontWeight: 500
+                        }}
+                      >
+                        {paymentStatus === 'success' ? 'Төлөлт амжилттай' :
+                         paymentStatus === 'PENDING' ? 'Төлөлт хүлээгдэж байна' :
+                         'Төлөлт амжилтгүй'}
                       </Typography>
                     </Box>
-                  </Stack>
+                  )}
+
+                  {/* Check Payment Button */}
+                  <Button
+                    variant="contained"
+                    onClick={handleCheckPayment}
+                    disabled={checkingPayment}
+                    sx={{
+                      mt: 3,
+                      borderRadius: 2,
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                      '&:hover': {
+                        background: `linear-gradient(90deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
+                      }
+                    }}
+                  >
+                    {checkingPayment ? 'Шалгаж байна...' : 'Төлөлт шалгах'}
+                  </Button>
                 </Paper>
-              ))}
+              )}
             </Stack>
           )}
         </DialogContent>
