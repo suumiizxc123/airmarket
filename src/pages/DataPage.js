@@ -63,6 +63,7 @@ const DataPage = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [paymentDialog, setPaymentDialog] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
+  const [createOrderID, setCreateOrderID] = useState(null);
   const [creatingOrder, setCreatingOrder] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -285,7 +286,9 @@ const DataPage = () => {
       if (!response.ok) throw new Error('Failed to create order');
       
       const result = await response.json();
+      console.log("result", result.order_id);
       setPaymentData(result);
+      setCreateOrderID(result.order_id);
       setPaymentDialog(true);
       setPaymentStatus(null);
     } catch (err) {
@@ -302,7 +305,7 @@ const DataPage = () => {
     try {
       setCheckingPayment(true);
       const encodedQrText = encodeURIComponent(paymentData.qr_text);
-      const response = await fetch(`https://clientsvc.globalsim.mn/api/user/page/check-payment-qpos?qr_text=${encodedQrText}`);
+      const response = await fetch(`https://clientsvc.globalsim.mn/api/user/page/check-payment-qpos?orderid=${createOrderID}`);
       
       if (!response.ok) throw new Error('Failed to check payment status');
       
